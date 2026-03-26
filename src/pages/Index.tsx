@@ -24,7 +24,7 @@ export default function Index() {
       <ScrollToTop />
 
       {/* Footer */}
-      <footer className="max-w-[1100px] mx-auto px-6 py-5 pb-10 border-t border-border flex justify-between items-center flex-wrap gap-2.5 text-muted-foreground text-[11.5px]">
+      <footer className="max-w-[1100px] mx-auto px-6 py-5 pb-20 sm:pb-10 border-t border-border flex justify-between items-center flex-wrap gap-2.5 text-muted-foreground text-[11.5px]">
         <span>© {new Date().getFullYear()} AURA Peptides</span>
         <span className="font-mono">RUO — Research Use Only</span>
       </footer>
