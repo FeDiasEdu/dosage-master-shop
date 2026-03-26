@@ -19,7 +19,7 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
       <div className="mx-4 mt-4 mb-3 border-2 border-foreground rounded-sm flex flex-col overflow-hidden flex-1">
         {/* Header band */}
         <div className="border-b-2 border-foreground px-3 py-2.5 flex items-baseline justify-between gap-2">
-          <img src={logoHorizontal} alt="AURA Peptides" className="h-5.5 dark:invert" />
+          <img src={logoHorizontal} alt="AURA Peptides" className="h-4.5 dark:invert" />
           <span className="text-[.55rem] uppercase tracking-[.12em] text-muted-foreground font-semibold">
             {CATEGORY_LABELS[product.category] || product.category}
           </span>
