@@ -35,8 +35,8 @@ export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
 
   const tabs: { id: Tab; label: string; icon: string; pill?: string }[] = [
     { id: "guia", label: "Guia", icon: "◈" },
-    { id: "calc", label: "Calculadora", icon: "⊙", pill: "mg → UI" },
     { id: "store", label: "Loja", icon: "🛒" },
+    { id: "calc", label: "Calculadora", icon: "⊙", pill: "mg → UI" },
   ];
 
   return (

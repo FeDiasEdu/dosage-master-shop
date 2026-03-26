@@ -19,7 +19,7 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
       <div className="mx-4 mt-4 mb-3 border-2 border-foreground rounded-sm flex flex-col overflow-hidden flex-1">
         {/* Header band */}
         <div className="border-b-2 border-foreground px-3 py-2.5 flex items-baseline justify-between gap-2">
-          <img src={logoHorizontal} alt="AURA Peptides" className="h-4 dark:invert" />
+          <img src={logoHorizontal} alt="AURA Peptides" className="h-5.5 dark:invert" />
           <span className="text-[.55rem] uppercase tracking-[.12em] text-muted-foreground font-semibold">
             {CATEGORY_LABELS[product.category] || product.category}
           </span>
@@ -99,21 +99,22 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
           )}
         </div>
         <div className="flex gap-2">
-          {active && active.stock <= 0 && (
+          {active && active.stock <= 0 ? (
             <button
               onClick={() => onNotify?.(name, active)}
               className="px-2.5 py-1.5 rounded-sm bg-transparent border border-border text-muted-foreground text-[.75rem] cursor-pointer font-sans transition-all hover:border-foreground hover:text-foreground"
             >
               Tenho Interesse
             </button>
+          ) : (
+            <button
+              disabled={!active || active.price === null}
+              onClick={() => active && onAddToCart(active)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-foreground text-card border-none text-[.75rem] font-bold cursor-pointer font-sans transition-opacity hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              + Carrinho
+            </button>
           )}
-          <button
-            disabled={!active || active.price === null || active.stock <= 0}
-            onClick={() => active && onAddToCart(active)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-foreground text-card border-none text-[.75rem] font-bold cursor-pointer font-sans transition-opacity hover:opacity-85 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            + Carrinho
-          </button>
         </div>
       </div>
     </div>
