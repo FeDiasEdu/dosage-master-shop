@@ -19,7 +19,7 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
       <div className="mx-4 mt-4 mb-3 border-2 border-foreground rounded-sm flex flex-col overflow-hidden flex-1">
         {/* Header band */}
         <div className="border-b-2 border-foreground px-3 py-2.5 flex items-baseline justify-between gap-2">
-          <img src={logoHorizontal} alt="AURA Peptides" className="h-5.5 dark:invert" />
+          <img src={logoHorizontal} alt="AURA Peptides" className="h-4.5 dark:invert" />
           <span className="text-[.55rem] uppercase tracking-[.12em] text-muted-foreground font-semibold">
             {CATEGORY_LABELS[product.category] || product.category}
           </span>
@@ -43,16 +43,14 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
               return (
                 <button
                   key={v.sku}
-                  disabled={outOfStock && noPrice}
                   onClick={() => setSelectedVariant(isActive ? null : v)}
-                  className={`px-2 py-0.5 rounded-sm text-[.7rem] font-semibold border transition-all
+                  className={`px-2 py-0.5 rounded-sm text-[.7rem] font-semibold border transition-all cursor-pointer
                     ${isActive
                       ? "bg-foreground text-card border-foreground"
                       : outOfStock
                         ? "border-dashed border-foreground/30 text-muted-foreground opacity-65 hover:opacity-100"
                         : "border-foreground/40 text-foreground hover:bg-foreground hover:text-card"
                     }
-                    ${outOfStock && noPrice ? "opacity-30 cursor-not-allowed line-through" : "cursor-pointer"}
                   `}
                 >
                   {v.label}
