@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { type StoreProduct, type StoreVariant, CATEGORY_LABELS } from "@/data/store-products";
+import logoHorizontal from "@/assets/logo-horizontal.png";
 
 interface StoreCardProps {
   name: string;
@@ -18,10 +19,7 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
       <div className="mx-4 mt-4 mb-3 border-2 border-foreground rounded-sm flex flex-col overflow-hidden flex-1">
         {/* Header band */}
         <div className="border-b-2 border-foreground px-3 py-2.5 flex items-baseline justify-between gap-2">
-          <div className="flex items-baseline gap-1">
-            <span className="text-[1.05rem] font-extrabold tracking-tight text-foreground leading-none">AURA</span>
-            <span className="text-[.65rem] font-medium text-muted-foreground tracking-wide">Peptides</span>
-          </div>
+          <img src={logoHorizontal} alt="AURA Peptides" className="h-4 dark:invert" />
           <span className="text-[.55rem] uppercase tracking-[.12em] text-muted-foreground font-semibold">
             {CATEGORY_LABELS[product.category] || product.category}
           </span>
@@ -78,7 +76,7 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
 
         {/* Footer band */}
         <div className="border-t-2 border-foreground px-3 py-1.5 text-[.55rem] text-muted-foreground tracking-wide text-center font-medium">
-          Distributed by: AURA|Peptides
+          💧 Acompanha Água Bacteriostática · 3 ml
         </div>
       </div>
 
