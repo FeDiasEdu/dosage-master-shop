@@ -43,16 +43,14 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
               return (
                 <button
                   key={v.sku}
-                  disabled={outOfStock && noPrice}
                   onClick={() => setSelectedVariant(isActive ? null : v)}
-                  className={`px-2 py-0.5 rounded-sm text-[.7rem] font-semibold border transition-all
+                  className={`px-2 py-0.5 rounded-sm text-[.7rem] font-semibold border transition-all cursor-pointer
                     ${isActive
                       ? "bg-foreground text-card border-foreground"
                       : outOfStock
                         ? "border-dashed border-foreground/30 text-muted-foreground opacity-65 hover:opacity-100"
                         : "border-foreground/40 text-foreground hover:bg-foreground hover:text-card"
                     }
-                    ${outOfStock && noPrice ? "opacity-30 cursor-not-allowed line-through" : "cursor-pointer"}
                   `}
                 >
                   {v.label}
