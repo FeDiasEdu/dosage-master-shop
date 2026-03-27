@@ -158,11 +158,13 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     const nullFields = ["price", "cost_price"];
     const val = value === "" ? (nullFields.includes(field) ? null : 0) : parseFloat(value);
     if (!data[sku]) data[sku] = { price: null, stock: 0, cost_price: null, stock_min: 0 };
-    (data[sku] as Record<string, unknown>)[field] = val;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (data[sku] as any)[field] = val;
     // Update in-memory
     for (const p of Object.values(STORE_PRODUCTS)) {
       const v = p.variants.find(x => x.sku === sku);
-      if (v) (v as Record<string, unknown>)[field] = val;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if (v) (v as any)[field] = val;
     }
     saveData(data);
     refresh();
