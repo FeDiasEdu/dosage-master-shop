@@ -7,9 +7,10 @@ interface StoreCardProps {
   product: StoreProduct;
   onAddToCart: (variant: StoreVariant) => void;
   onNotify?: (productName: string, variant: StoreVariant) => void;
+  onInfo?: (productName: string) => void;
 }
 
-export default function StoreCard({ name, product, onAddToCart, onNotify }: StoreCardProps) {
+export default function StoreCard({ name, product, onAddToCart, onNotify, onInfo }: StoreCardProps) {
   const [selectedVariant, setSelectedVariant] = useState<StoreVariant | null>(null);
   const active = selectedVariant;
 
@@ -19,18 +20,19 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
       <div className="mx-4 mt-4 mb-3 border-2 border-foreground rounded-sm flex flex-col overflow-hidden flex-1">
         {/* Header band */}
         <div className="border-b-2 border-foreground px-3 py-2.5 flex items-baseline justify-between gap-2">
-          <img src={logoHorizontal} alt="AURA Peptides" className="h-4.5 dark:invert" />
-          <span className="text-[.55rem] uppercase tracking-[.12em] text-muted-foreground font-semibold">
+          <img src={logoHorizontal} alt="AURA Peptides" className="h-6 dark:invert" />
+          <span className="text-[.6rem] uppercase tracking-[.1em] font-semibold bg-muted text-muted-foreground px-2 py-0.5 rounded-sm">
             {CATEGORY_LABELS[product.category] || product.category}
           </span>
         </div>
 
-        {/* Product name — main label area */}
-        <div className="px-3 py-3 border-b border-foreground/30">
+        {/* Product name + RUO */}
+        <div className="px-3 py-3 border-b border-foreground/30 flex items-baseline justify-between gap-2">
           <h3 className="text-lg font-bold text-foreground leading-tight tracking-tight">{name}</h3>
+          <span className="text-[.55rem] font-mono font-semibold text-muted-foreground tracking-wider shrink-0">RUO</span>
         </div>
 
-        {/* Variant pills as "Contém" info */}
+        {/* Variant pills */}
         <div className="px-3 py-2.5 border-b border-foreground/30 flex-1">
           <p className="text-[.6rem] uppercase tracking-[.1em] text-muted-foreground font-semibold mb-1.5">
             Dosagem disponível
@@ -38,7 +40,6 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
           <div className="flex flex-wrap gap-1.5">
             {product.variants.map((v) => {
               const outOfStock = v.stock <= 0;
-              const noPrice = v.price === null;
               const isActive = active?.sku === v.sku;
               return (
                 <button
@@ -97,12 +98,21 @@ export default function StoreCard({ name, product, onAddToCart, onNotify }: Stor
           )}
         </div>
         <div className="flex gap-2">
+          {/* Info button */}
+          <button
+            onClick={() => onInfo?.(name)}
+            className="px-2.5 py-1.5 rounded-sm bg-transparent border border-border text-muted-foreground text-[.75rem] cursor-pointer font-sans transition-all hover:border-foreground hover:text-foreground"
+          >
+            ℹ Info
+          </button>
+
           {active && active.stock <= 0 ? (
             <button
               onClick={() => onNotify?.(name, active)}
-              className="px-2.5 py-1.5 rounded-sm bg-transparent border border-border text-muted-foreground text-[.75rem] cursor-pointer font-sans transition-all hover:border-foreground hover:text-foreground"
+              className="px-2.5 py-1.5 rounded-sm border text-[.75rem] cursor-pointer font-sans font-bold transition-all
+                bg-amber-500/10 border-amber-500/50 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 hover:border-amber-500"
             >
-              Tenho Interesse
+              🔔 Tenho Interesse
             </button>
           ) : (
             <button

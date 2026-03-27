@@ -4,10 +4,12 @@ import { STORE_PRODUCTS, CATEGORY_LABELS, CATEGORY_ICONS, type StoreVariant } fr
 import { useCartStore } from "@/stores/cart-store";
 import StoreCard from "@/components/store/StoreCard";
 import CartDrawer from "@/components/store/CartDrawer";
+import PeptideInfoModal from "@/components/store/PeptideInfoModal";
 
 export default function StorePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [infoProduct, setInfoProduct] = useState<string | null>(null);
   const cartStore = useCartStore();
 
   const categories = useMemo(() => {
@@ -40,30 +42,18 @@ export default function StorePage() {
     });
   };
 
+  const handleNotify = (productName: string, variant: StoreVariant) => {
+    // Increment interest count in localStorage
+    const interest = JSON.parse(localStorage.getItem("aura_interest") || "{}");
+    interest[variant.sku] = (interest[variant.sku] || 0) + 1;
+    localStorage.setItem("aura_interest", JSON.stringify(interest));
+    alert(`✅ Interesse registrado para ${productName} — ${variant.label}!\nObrigado, entraremos em contato.`);
+  };
+
   return (
     <div className="min-h-screen pt-14">
       {/* Hero */}
       <div className="max-w-[1100px] mx-auto px-6 pt-14 pb-10">
-        <div className="inline-flex flex-col gap-1.5 mb-7">
-          {[
-            { id: "guia", icon: "◈", label: "Guia de Peptídeos", active: false },
-            { id: "calc", icon: "⊙", label: "Calculadora", active: false },
-            { id: "store", icon: "🛒", label: "Loja", active: true },
-          ].map((tab) => (
-            <span
-              key={tab.id}
-              className={`inline-flex items-center gap-1.5 px-5 py-2 rounded-[10px] border text-xs font-semibold transition-all cursor-default
-                ${tab.active
-                  ? "bg-foreground border-foreground text-card"
-                  : "bg-transparent border-border text-muted-foreground"
-                }`}
-            >
-              <span className="text-[13px]">{tab.icon}</span>
-              {tab.label}
-            </span>
-          ))}
-        </div>
-
         <p className="font-mono text-[10.5px] font-semibold tracking-[.2em] uppercase text-muted-foreground mb-4 flex items-center gap-2">
           <span className="block w-5 h-px bg-muted-foreground" />
           Peptídeos — AURA
@@ -141,6 +131,8 @@ export default function StorePage() {
                   name={name}
                   product={product}
                   onAddToCart={(variant) => handleAddToCart(name, variant)}
+                  onNotify={handleNotify}
+                  onInfo={(productName) => setInfoProduct(productName)}
                 />
               </motion.div>
             ))}
@@ -165,6 +157,12 @@ export default function StorePage() {
 
       {/* Cart Drawer */}
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+
+      {/* Info Modal */}
+      <PeptideInfoModal
+        productName={infoProduct}
+        onClose={() => setInfoProduct(null)}
+      />
     </div>
   );
 }
