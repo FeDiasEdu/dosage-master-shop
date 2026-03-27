@@ -3,6 +3,7 @@ import TopBar from "@/components/TopBar";
 import StorePage from "@/pages/StorePage";
 import GuidePage from "@/pages/GuidePage";
 import CalcPage from "@/pages/CalcPage";
+import AdminPanel from "@/components/admin/AdminPanel";
 import iconInstagram from "@/assets/icon-instagram.png";
 import iconWhatsapp from "@/assets/icon-whatsapp.png";
 import iconGmail from "@/assets/icon-gmail.png";
@@ -11,10 +12,26 @@ type Tab = "guia" | "calc" | "store";
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState<Tab>("store");
+  const [adminOpen, setAdminOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [activeTab]);
+
+  // Open admin via hash or Ctrl+Shift+A
+  useEffect(() => {
+    if (location.hash === "#admin") {
+      setTimeout(() => setAdminOpen(true), 500);
+    }
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === "A") {
+        e.preventDefault();
+        setAdminOpen(true);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
 
   return (
     <>
@@ -60,6 +77,9 @@ export default function Index() {
           </a>
         </div>
       </footer>
+
+      {/* Admin Panel */}
+      <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
     </>
   );
 }
