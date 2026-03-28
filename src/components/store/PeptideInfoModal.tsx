@@ -33,18 +33,18 @@ function DoseBadge({ level, label }: { level: string; label: string }) {
   );
 }
 
-/** Find guide info by product name or guide_key */
+/** Find guide info by product name, modalId, or guide_key */
 function findGuide(productName: string, guideKey?: string | null): PeptideInfo | null {
-  // Try guide_key first
+  // Try direct key (modalId from guide cards)
+  if (PEPTIDE_INFO[productName]) return PEPTIDE_INFO[productName];
+  // Try guide_key from store catalog
   if (guideKey && PEPTIDE_INFO[guideKey]) return PEPTIDE_INFO[guideKey];
   // Try matching by name in SYN_MAP (name → key)
   const keyFromName = SYN_MAP[productName];
   if (keyFromName && PEPTIDE_INFO[keyFromName]) return PEPTIDE_INFO[keyFromName];
-  // Try direct key lookup with lowercase/normalized
-  const normalized = productName.toLowerCase().replace(/[\s\-()]/g, '');
-  for (const [key, info] of Object.entries(PEPTIDE_INFO)) {
+  // Try matching by info.name
+  for (const [, info] of Object.entries(PEPTIDE_INFO)) {
     if (info.name === productName) return info;
-    if (key === normalized) return info;
   }
   return null;
 }
