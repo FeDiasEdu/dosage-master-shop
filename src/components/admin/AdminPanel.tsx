@@ -18,6 +18,7 @@ interface ProductRow {
   name: string;
   category: string;
   slug: string;
+  active: boolean;
 }
 
 interface VariantRow {
