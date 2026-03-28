@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { type StoreVariant } from "@/data/store-products";
 import { useCartStore } from "@/stores/cart-store";
@@ -60,6 +60,17 @@ export default function StorePage() {
       toast.info(`Interesse removido para ${productName} — ${variant.label}`);
     }
   };
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ productName?: string; modalId?: string | null }>).detail;
+      if (!detail) return;
+      setInfoProduct(detail.productName || detail.modalId || null);
+    };
+
+    window.addEventListener("aura:open-peptide", handler as EventListener);
+    return () => window.removeEventListener("aura:open-peptide", handler as EventListener);
+  }, []);
 
   return (
     <div className="min-h-screen pt-14">
