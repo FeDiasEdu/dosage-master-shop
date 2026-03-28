@@ -56,6 +56,7 @@ interface FlatRow {
   productId: string;
   productName: string;
   category: string;
+  active: boolean;
   variantId: string;
   sku: string;
   label: string;
@@ -190,6 +191,8 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     for (const prod of products) {
       if (catFilter && prod.category !== catFilter) continue;
       if (q && !prod.name.toLowerCase().includes(q)) continue;
+      if (statusFilter === "visivel" && !prod.active) continue;
+      if (statusFilter === "oculto" && prod.active) continue;
 
       const prodVariants = variants.filter(v => v.product_id === prod.id);
       for (const v of prodVariants) {
@@ -209,6 +212,7 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
           productId: prod.id,
           productName: prod.name,
           category: prod.category,
+          active: prod.active,
           variantId: v.id,
           sku: v.sku,
           label: v.label,
@@ -451,6 +455,8 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
               <option value="inativo">Inativo (zerado)</option>
               <option value="baixo">Abaixo do mínimo</option>
               <option value="interesse">🔔 Com interesse</option>
+              <option value="visivel">👁 Visível na loja</option>
+              <option value="oculto">🚫 Oculto da loja</option>
             </select>
           </div>
 
@@ -482,7 +488,7 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
                       <input type="checkbox" checked={selectedSkus.size === rows.length && rows.length > 0}
                         onChange={toggleSelectAll} className="w-3.5 h-3.5 cursor-pointer accent-foreground" />
                     </th>
-                    <Th>Produto</Th><Th>Dosagem</Th><Th>SKU</Th><Th>Custo</Th><Th>Margem</Th><Th>Preço</Th><Th>Estoque</Th><Th>Mín</Th><Th>Status</Th><Th>🔔</Th><Th>Ações</Th>
+                    <Th>Produto</Th><Th>Dosagem</Th><Th>SKU</Th><Th>Custo</Th><Th>Margem</Th><Th>Preço</Th><Th>Estoque</Th><Th>Mín</Th><Th>Status</Th><Th>👁</Th><Th>🔔</Th><Th>Ações</Th>
                   </tr>
                 </thead>
                 <tbody>
@@ -536,6 +542,15 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
                           <span className={`inline-block px-2 py-0.5 rounded-full text-[.68rem] font-semibold ${
                             row.stock > 0 ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400" : "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400"
                           }`}>{row.stock > 0 ? "Ativo" : "Inativo"}</span>
+                        </td>
+                        <td className="p-2 text-center">
+                          <button
+                            onClick={() => toggleProductVisibility(row.productId, row.active)}
+                            className={`text-base cursor-pointer bg-transparent border-none transition-opacity ${row.active ? "opacity-100" : "opacity-30"}`}
+                            title={row.active ? "Visível na loja — clique para ocultar" : "Oculto da loja — clique para mostrar"}
+                          >
+                            {row.active ? "👁" : "🚫"}
+                          </button>
                         </td>
                         <td className="p-2">
                           {row.intCount > 0 ? (
