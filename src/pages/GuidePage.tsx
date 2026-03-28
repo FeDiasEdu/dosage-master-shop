@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GUIDE_CARDS, GUIDE_SECTIONS, SECTION_CATEGORY_MAP, type GuideCard } from "@/data/guide-cards";
 import { CATEGORY_LABELS, CATEGORY_ICONS, CATEGORY_LED_CLASSES } from "@/data/store-products";
 import CategoryNav from "@/components/CategoryNav";
@@ -70,6 +70,17 @@ export default function GuidePage() {
   }, [filteredCards, activeCategory, searchQuery]);
 
   const visibleCount = filteredCards.length;
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ productName?: string; modalId?: string | null }>).detail;
+      if (!detail) return;
+      setModalProduct(detail.productName || detail.modalId || null);
+    };
+
+    window.addEventListener("aura:open-peptide", handler as EventListener);
+    return () => window.removeEventListener("aura:open-peptide", handler as EventListener);
+  }, []);
 
   return (
     <div className="min-h-screen pt-14">

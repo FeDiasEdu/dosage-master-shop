@@ -44,6 +44,8 @@ function findGuide(productName: string, guideKey?: string | null): PeptideInfo |
   // Try matching by name in SYN_MAP (name → key)
   const keyFromName = SYN_MAP[productName];
   if (keyFromName && PEPTIDE_INFO[keyFromName]) return PEPTIDE_INFO[keyFromName];
+  const resolvedModalId = resolveGuideModalId(productName);
+  if (resolvedModalId && PEPTIDE_INFO[resolvedModalId]) return PEPTIDE_INFO[resolvedModalId];
   // Try matching by info.name
   for (const [, info] of Object.entries(PEPTIDE_INFO)) {
     if (info.name === productName) return info;
@@ -62,7 +64,7 @@ export default function PeptideInfoModal({ productName, onClose }: PeptideInfoMo
   const handleSynergyClick = (synergy: string) => {
     const modalId = resolveGuideModalId(synergy);
     const storeMatch = findMatchingStoreProduct(products, synergy);
-    const nextProductName = storeMatch?.name ?? guide?.name ?? productName ?? synergy;
+    const nextProductName = storeMatch?.name ?? modalId ?? synergy;
 
     if (storeMatch?.name) {
       window.dispatchEvent(new CustomEvent("aura:open-peptide", { detail: { productName: storeMatch.name, modalId } }));
