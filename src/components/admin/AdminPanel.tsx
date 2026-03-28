@@ -192,8 +192,6 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     for (const prod of products) {
       if (catFilter && prod.category !== catFilter) continue;
       if (q && !prod.name.toLowerCase().includes(q)) continue;
-      if (statusFilter === "visivel" && v.available === false) continue;
-      if (statusFilter === "oculto" && v.available !== false) continue;
 
       const prodVariants = variants.filter(v => v.product_id === prod.id);
       for (const v of prodVariants) {
@@ -203,17 +201,21 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
         const stMin = sd?.stock_min ?? 0;
         const avail = stock > 0;
         const isBaixo = stMin > 0 && stock < stMin;
+        const isVisible = v.available !== false;
 
         if (statusFilter === "ativo" && !avail) continue;
         if (statusFilter === "inativo" && avail) continue;
         if (statusFilter === "baixo" && !isBaixo) continue;
         if (statusFilter === "interesse" && !(interests[v.sku] > 0)) continue;
+        if (statusFilter === "visivel" && !isVisible) continue;
+        if (statusFilter === "oculto" && isVisible) continue;
 
         result.push({
           productId: prod.id,
           productName: prod.name,
           category: prod.category,
           active: prod.active,
+          available: isVisible,
           variantId: v.id,
           sku: v.sku,
           label: v.label,
