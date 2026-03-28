@@ -2,10 +2,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useStoreCatalog } from "@/hooks/use-store-catalog";
 import { CATEGORY_LABELS, CATEGORY_LED_CLASSES } from "@/data/store-products";
 import { PEPTIDE_INFO, SYN_MAP, type PeptideInfo } from "@/data/peptide-guide";
+import { findMatchingStoreProduct, resolveGuideModalId } from "@/lib/peptide-utils";
 
 interface PeptideInfoModalProps {
   productName: string | null;
   onClose: () => void;
+  onNavigateToPeptide?: (target: { productName?: string; modalId?: string | null }) => void;
 }
 
 function Section({ icon, title, children }: { icon: string; title: string; children: React.ReactNode }) {
@@ -56,6 +58,21 @@ export default function PeptideInfoModal({ productName, onClose }: PeptideInfoMo
 
   // Allow opening even without a store product (for guide page)
   const showModal = productName && (product || guide);
+
+  const handleSynergyClick = (synergy: string) => {
+    const modalId = resolveGuideModalId(synergy);
+    const storeMatch = findMatchingStoreProduct(products, synergy);
+    const nextProductName = storeMatch?.name ?? guide?.name ?? productName ?? synergy;
+
+    if (storeMatch?.name) {
+      window.dispatchEvent(new CustomEvent("aura:open-peptide", { detail: { productName: storeMatch.name, modalId } }));
+      return;
+    }
+
+    if (modalId) {
+      window.dispatchEvent(new CustomEvent("aura:open-peptide", { detail: { productName: nextProductName, modalId } }));
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -187,9 +204,14 @@ export default function PeptideInfoModal({ productName, onClose }: PeptideInfoMo
                 <Section icon="🔗" title="Sinergias & Stacks">
                   <div className="flex flex-wrap gap-1.5">
                     {guide.synergies.map((s) => (
-                      <span key={s} className="px-2.5 py-1 rounded-lg bg-secondary border border-border text-foreground text-[.72rem] font-semibold">
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => handleSynergyClick(s)}
+                        className="px-2.5 py-1 rounded-lg bg-secondary border border-border text-foreground text-[.72rem] font-semibold transition-colors hover:bg-accent hover:border-foreground/30"
+                      >
                         {s}
-                      </span>
+                      </button>
                     ))}
                   </div>
                 </Section>

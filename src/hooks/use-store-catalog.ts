@@ -69,6 +69,18 @@ export function useStoreCatalog() {
 
   useEffect(() => {
     fetchCatalog();
+
+    const channel = supabase
+      .channel(`store-catalog-sync`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, fetchCatalog)
+      .on("postgres_changes", { event: "*", schema: "public", table: "product_variants" }, fetchCatalog)
+      .on("postgres_changes", { event: "*", schema: "public", table: "aura_store_sku" }, fetchCatalog)
+      .on("postgres_changes", { event: "*", schema: "public", table: "stock_movements" }, fetchCatalog)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return { products, loading, error, refetch: fetchCatalog };

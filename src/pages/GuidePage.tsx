@@ -3,6 +3,8 @@ import { GUIDE_CARDS, GUIDE_SECTIONS, SECTION_CATEGORY_MAP, type GuideCard } fro
 import { CATEGORY_LABELS, CATEGORY_ICONS, CATEGORY_LED_CLASSES } from "@/data/store-products";
 import CategoryNav from "@/components/CategoryNav";
 import PeptideInfoModal from "@/components/store/PeptideInfoModal";
+import { resolveGuideCategory } from "@/lib/peptide-utils";
+import { useStoreCatalog } from "@/hooks/use-store-catalog";
 
 const GUIDE_CATEGORIES = [
   "all", "recovery", "bulking", "cutting", "glp1", "cognitivo", "sono",
@@ -34,17 +36,31 @@ export default function GuidePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [modalProduct, setModalProduct] = useState<string | null>(null);
+  const { products } = useStoreCatalog();
+
+  const normalizedCards = useMemo(() => {
+    return GUIDE_CARDS.map((card) => {
+      const category = resolveGuideCategory(card, products);
+      const badgeLabel = CATEGORY_LABELS[category] || card.badges[0] || category;
+
+      return {
+        ...card,
+        cats: category,
+        badges: [badgeLabel],
+      };
+    });
+  }, [products]);
 
   const filteredCards = useMemo(() => {
     const q = searchQuery.toLowerCase();
-    return GUIDE_CARDS.filter(card => {
+    return normalizedCards.filter(card => {
       const catMatch = activeCategory === "all" || card.cats.split(" ").includes(activeCategory);
       const searchMatch = !q || card.name.toLowerCase().includes(q) ||
         card.tagline.toLowerCase().includes(q) ||
         card.tags.some(t => t.toLowerCase().includes(q));
       return catMatch && searchMatch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery, normalizedCards]);
 
   const groupedCards = useMemo(() => {
     if (activeCategory !== "all" || searchQuery) {
