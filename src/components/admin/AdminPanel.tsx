@@ -202,6 +202,7 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
         if (statusFilter === "ativo" && !avail) continue;
         if (statusFilter === "inativo" && avail) continue;
         if (statusFilter === "baixo" && !isBaixo) continue;
+        if (statusFilter === "interesse" && !(interests[v.sku] > 0)) continue;
 
         result.push({
           productId: prod.id,
@@ -246,21 +247,24 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     return { total, ativos, valor, baixo, totalInt };
   }, [variants, skuData, interests]);
 
-  // Field update handlers
+  // Field update handlers — optimistic update (no full reload, no scroll jump)
   const handleFieldChange = async (sku: string, variantId: string, field: string, value: string) => {
     const numVal = value === "" ? null : parseFloat(value);
 
     if (field === "price") {
+      setVariants(prev => prev.map(v => v.id === variantId ? { ...v, price: numVal } : v));
       await supabase.from("product_variants").update({ price: numVal }).eq("id", variantId);
     } else if (field === "stock") {
-      await supabase.from("product_variants").update({ stock_qty: numVal ?? 0 }).eq("id", variantId);
+      const stockVal = numVal ?? 0;
+      setVariants(prev => prev.map(v => v.id === variantId ? { ...v, stock_qty: stockVal } : v));
+      await supabase.from("product_variants").update({ stock_qty: stockVal }).eq("id", variantId);
     } else if (field === "cost_price" || field === "stock_min") {
+      setSkuData(prev => ({ ...prev, [sku]: { ...prev[sku], sku, [field]: numVal ?? 0, stock: prev[sku]?.stock ?? 0, price: prev[sku]?.price ?? null, cost_price: prev[sku]?.cost_price ?? null, stock_min: prev[sku]?.stock_min ?? 0 } }));
       await supabase.from("aura_store_sku").upsert(
         { sku, [field]: numVal ?? 0 },
         { onConflict: "sku" }
       );
     }
-    await loadData();
   };
 
   const handleMovement = async (sku: string, pname: string, label: string, type: string, qty: number, cost: number | null, notes: string) => {
@@ -272,52 +276,50 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
 
     const newStock = Math.max(0, (variant.stock_qty || 0) + movType.dir * qty);
 
-    // Update stock
-    await supabase.from("product_variants").update({ stock_qty: newStock }).eq("id", variant.id);
-
-    // Update cost if provided
+    // Optimistic update
+    setVariants(prev => prev.map(v => v.id === variant.id ? { ...v, stock_qty: newStock } : v));
     if (cost !== null) {
-      await supabase.from("aura_store_sku").upsert(
-        { sku, cost_price: cost },
-        { onConflict: "sku" }
-      );
+      setSkuData(prev => ({ ...prev, [sku]: { ...prev[sku], sku, cost_price: cost, stock: newStock, price: prev[sku]?.price ?? null, stock_min: prev[sku]?.stock_min ?? 0 } }));
     }
 
-    // Record movement
+    // Persist
+    await supabase.from("product_variants").update({ stock_qty: newStock }).eq("id", variant.id);
+    if (cost !== null) {
+      await supabase.from("aura_store_sku").upsert({ sku, cost_price: cost }, { onConflict: "sku" });
+    }
     await supabase.from("stock_movements").insert({
-      sku,
-      product_name: pname,
-      variant_label: label,
-      mov_type: type,
-      direction: movType.dir,
-      quantity: qty,
-      balance_after: newStock,
-      unit_cost: cost,
-      notes: notes || null,
+      sku, product_name: pname, variant_label: label,
+      mov_type: type, direction: movType.dir, quantity: qty,
+      balance_after: newStock, unit_cost: cost, notes: notes || null,
     });
 
     toast.success(`Movimentação registrada: ${pname} ${label}`);
-    await loadData();
   };
 
   const handleDelete = async (row: FlatRow) => {
     if (!confirm(`Excluir "${row.productName} — ${row.label}"?\nSe for a última variante, o produto será removido.`)) return;
 
+    // Optimistic removal
+    setVariants(prev => prev.filter(v => v.id !== row.variantId));
+
     await supabase.from("product_variants").delete().eq("id", row.variantId);
 
-    // Check if product has other variants
     const remaining = variants.filter(v => v.product_id === row.productId && v.id !== row.variantId);
     if (remaining.length === 0) {
+      setProducts(prev => prev.filter(p => p.id !== row.productId));
       await supabase.from("products").delete().eq("id", row.productId);
       await supabase.from("aura_deleted").upsert({ pname: row.productName }, { onConflict: "pname" });
     }
 
     toast.success(`Excluído: ${row.productName} — ${row.label}`);
-    await loadData();
   };
 
   const bulkDelete = async () => {
     if (!selectedSkus.size || !confirm(`Excluir ${selectedSkus.size} SKU(s) selecionados?`)) return;
+
+    // Optimistic removal
+    const skusToDelete = new Set(selectedSkus);
+    setVariants(prev => prev.filter(v => !skusToDelete.has(v.sku)));
 
     for (const sku of selectedSkus) {
       const v = variants.find(x => x.sku === sku);
@@ -325,6 +327,7 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
         await supabase.from("product_variants").delete().eq("id", v.id);
         const remaining = variants.filter(x => x.product_id === v.product_id && x.sku !== sku);
         if (remaining.length === 0) {
+          setProducts(prev => prev.filter(p => p.id !== v.product_id));
           await supabase.from("products").delete().eq("id", v.product_id);
         }
       }
@@ -332,11 +335,13 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
 
     toast.success(`${selectedSkus.size} SKU(s) excluídos`);
     setSelectedSkus(new Set());
-    await loadData();
   };
 
   const bulkZero = async () => {
     if (!selectedSkus.size || !confirm(`Zerar estoque de ${selectedSkus.size} SKU(s)?`)) return;
+
+    // Optimistic update
+    setVariants(prev => prev.map(v => selectedSkus.has(v.sku) ? { ...v, stock_qty: 0 } : v));
 
     for (const sku of selectedSkus) {
       const v = variants.find(x => x.sku === sku);
@@ -347,13 +352,12 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
 
     toast.success(`Estoque zerado para ${selectedSkus.size} SKU(s)`);
     setSelectedSkus(new Set());
-    await loadData();
   };
 
   const clearInterest = async (sku: string) => {
+    setInterests(prev => { const next = { ...prev }; delete next[sku]; return next; });
     await supabase.from("aura_interest").delete().eq("sku", sku);
     toast.success("Interesse zerado");
-    await loadData();
   };
 
   const toggleSelect = (sku: string) => {
@@ -438,6 +442,7 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
               <option value="ativo">Ativo (em estoque)</option>
               <option value="inativo">Inativo (zerado)</option>
               <option value="baixo">Abaixo do mínimo</option>
+              <option value="interesse">🔔 Com interesse</option>
             </select>
           </div>
 
