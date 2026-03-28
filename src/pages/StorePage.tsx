@@ -90,7 +90,7 @@ export default function StorePage() {
 
       {/* Sticky filter bar */}
       <div className="sticky top-14 z-[91] bg-background border-b border-border backdrop-blur-[18px]">
-        <CategoryNav categories={categories} active={activeCategory} onChange={setActiveCategory} />
+        <CategoryNav categories={categories} active={activeCategory} onChange={setActiveCategory} useLedColors />
         <div className="px-6 py-2 flex items-center gap-3">
           <div className="relative flex-1 max-w-[400px] mx-auto">
             <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-[13px] pointer-events-none">⌕</span>

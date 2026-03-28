@@ -365,11 +365,37 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     toast.success("Interesse zerado");
   };
 
+  const toggleVariantVisibility = async (variantId: string, currentAvailable: boolean) => {
+    const newAvailable = !currentAvailable;
+    setVariants(prev => prev.map(v => v.id === variantId ? { ...v, available: newAvailable } : v));
+    await supabase.from("product_variants").update({ available: newAvailable }).eq("id", variantId);
+    toast.success(newAvailable ? "Variante visível na loja" : "Variante oculta da loja");
+  };
+
   const toggleProductVisibility = async (productId: string, currentActive: boolean) => {
     const newActive = !currentActive;
     setProducts(prev => prev.map(p => p.id === productId ? { ...p, active: newActive } : p));
     await supabase.from("products").update({ active: newActive }).eq("id", productId);
     toast.success(newActive ? "Produto visível na loja" : "Produto oculto da loja");
+  };
+
+  const bulkToggleVisibility = async (hide: boolean) => {
+    if (!selectedSkus.size) return;
+    const action = hide ? "ocultar" : "mostrar";
+    if (!confirm(`${hide ? "Ocultar" : "Mostrar"} ${selectedSkus.size} SKU(s) na loja?`)) return;
+    
+    const newAvailable = !hide;
+    setVariants(prev => prev.map(v => selectedSkus.has(v.sku) ? { ...v, available: newAvailable } : v));
+    
+    for (const sku of selectedSkus) {
+      const v = variants.find(x => x.sku === sku);
+      if (v) {
+        await supabase.from("product_variants").update({ available: newAvailable }).eq("id", v.id);
+      }
+    }
+    
+    toast.success(`${selectedSkus.size} SKU(s) ${hide ? "ocultos" : "visíveis"} na loja`);
+    setSelectedSkus(new Set());
   };
 
   const toggleSelect = (sku: string) => {
