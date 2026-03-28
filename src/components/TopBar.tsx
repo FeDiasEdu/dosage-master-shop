@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import logoHorizontal from "@/assets/logo-horizontal.png";
+import type { User } from "@supabase/supabase-js";
 
 type Tab = "guia" | "calc" | "store";
 
 interface TopBarProps {
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
+  user?: User | null;
+  onAuthClick?: () => void;
 }
 
-export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
+export default function TopBar({ activeTab, onTabChange, user, onAuthClick }: TopBarProps) {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -48,11 +51,7 @@ export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
 
           <div className="flex items-center h-full gap-3">
             <a href="#" className="flex items-center gap-2.5 no-underline" onClick={(e) => { e.preventDefault(); onTabChange("guia"); }}>
-              <img
-                src={logoHorizontal}
-                alt="AURA Peptides"
-                className="h-6 dark:invert"
-              />
+              <img src={logoHorizontal} alt="AURA Peptides" className="h-6 dark:invert" />
               <div className="w-px h-5 bg-border mx-3" />
             </a>
             <nav className="hidden sm:flex items-stretch h-full">
@@ -82,7 +81,17 @@ export default function TopBar({ activeTab, onTabChange }: TopBarProps) {
             </nav>
           </div>
 
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end gap-2">
+            <button
+              onClick={onAuthClick}
+              className="inline-flex items-center gap-1.5 px-3 h-9 rounded-full border border-border bg-card text-xs font-medium cursor-pointer transition-all hover:border-foreground hover:bg-secondary"
+            >
+              {user ? (
+                <>👤 <span className="hidden md:inline">{user.email?.split("@")[0]}</span></>
+              ) : (
+                <>👤 <span className="hidden md:inline">Entrar</span></>
+              )}
+            </button>
             <button
               onClick={toggleTheme}
               className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-border bg-card text-lg cursor-pointer transition-all hover:border-foreground hover:bg-secondary"

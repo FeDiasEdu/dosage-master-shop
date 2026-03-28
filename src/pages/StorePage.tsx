@@ -12,7 +12,6 @@ import { toast } from "sonner";
 export default function StorePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [showInterestOnly, setShowInterestOnly] = useState(false);
   const [infoProduct, setInfoProduct] = useState<string | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -33,11 +32,10 @@ export default function StorePage() {
         const catMatch = activeCategory === "all" || product.category === activeCategory;
         const searchMatch = !q || name.toLowerCase().includes(q) ||
           product.variants.some((v) => v.label.toLowerCase().includes(q) || v.sku.toLowerCase().includes(q));
-        const interestMatch = !showInterestOnly || product.variants.some((v) => hasInterest(v.sku));
-        return catMatch && searchMatch && interestMatch;
+        return catMatch && searchMatch;
       })
       .sort(([a], [b]) => a.localeCompare(b));
-  }, [activeCategory, searchQuery, showInterestOnly, products, hasInterest]);
+  }, [activeCategory, searchQuery, products]);
 
   const handleAddToCart = (productName: string, variant: StoreVariant) => {
     if (variant.price === null || variant.stock <= 0) return;
@@ -120,16 +118,6 @@ export default function StorePage() {
               className="w-full bg-card border border-border rounded-lg py-1.5 pl-8 pr-3 text-foreground text-xs outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground"
             />
           </div>
-          <button
-            onClick={() => setShowInterestOnly(!showInterestOnly)}
-            className={`shrink-0 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all cursor-pointer ${
-              showInterestOnly
-                ? "bg-amber-500/20 border-amber-500 text-amber-600 dark:text-amber-300"
-                : "bg-card border-border text-muted-foreground hover:border-foreground hover:text-foreground"
-            }`}
-          >
-            🔔 Interesse
-          </button>
         </div>
       </div>
 
