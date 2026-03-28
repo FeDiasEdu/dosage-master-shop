@@ -881,7 +881,7 @@ function AddItemModal({ onClose, existingProducts, onAdded }: {
           dosage_value: entry.dosage,
           dosage_unit: entry.unit,
           stock_qty: qty,
-          available: qty > 0,
+          available: true,
         });
 
         // Save cost/price to aura_store_sku
