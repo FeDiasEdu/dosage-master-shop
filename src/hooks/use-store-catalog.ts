@@ -37,15 +37,18 @@ export function useStoreCatalog() {
       const map: StoreProductMap = {};
       for (const row of (data as unknown as CatalogRow[]) || []) {
         if (!row.name || !row.active) continue;
-        const variants: StoreVariant[] = (row.variants || []).map((v) => ({
-          id: v.id,
-          sku: v.sku,
-          label: v.label,
-          dosage_value: v.dosage_value,
-          dosage_unit: v.dosage_unit,
-          price: v.price,
-          stock: v.stock_qty ?? 0,
-        }));
+        const variants: StoreVariant[] = (row.variants || [])
+          .filter((v) => v.available !== false)
+          .map((v) => ({
+            id: v.id,
+            sku: v.sku,
+            label: v.label,
+            dosage_value: v.dosage_value,
+            dosage_unit: v.dosage_unit,
+            price: v.price,
+            stock: v.stock_qty ?? 0,
+          }));
+        if (variants.length === 0) continue;
         map[row.name] = {
           id: row.id,
           slug: row.slug,

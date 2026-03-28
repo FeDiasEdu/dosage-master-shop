@@ -57,6 +57,7 @@ interface FlatRow {
   productName: string;
   category: string;
   active: boolean;
+  available: boolean;
   variantId: string;
   sku: string;
   label: string;
@@ -191,8 +192,6 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     for (const prod of products) {
       if (catFilter && prod.category !== catFilter) continue;
       if (q && !prod.name.toLowerCase().includes(q)) continue;
-      if (statusFilter === "visivel" && !prod.active) continue;
-      if (statusFilter === "oculto" && prod.active) continue;
 
       const prodVariants = variants.filter(v => v.product_id === prod.id);
       for (const v of prodVariants) {
@@ -202,17 +201,21 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
         const stMin = sd?.stock_min ?? 0;
         const avail = stock > 0;
         const isBaixo = stMin > 0 && stock < stMin;
+        const isVisible = v.available !== false;
 
         if (statusFilter === "ativo" && !avail) continue;
         if (statusFilter === "inativo" && avail) continue;
         if (statusFilter === "baixo" && !isBaixo) continue;
         if (statusFilter === "interesse" && !(interests[v.sku] > 0)) continue;
+        if (statusFilter === "visivel" && !isVisible) continue;
+        if (statusFilter === "oculto" && isVisible) continue;
 
         result.push({
           productId: prod.id,
           productName: prod.name,
           category: prod.category,
           active: prod.active,
+          available: isVisible,
           variantId: v.id,
           sku: v.sku,
           label: v.label,
@@ -365,11 +368,37 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     toast.success("Interesse zerado");
   };
 
+  const toggleVariantVisibility = async (variantId: string, currentAvailable: boolean) => {
+    const newAvailable = !currentAvailable;
+    setVariants(prev => prev.map(v => v.id === variantId ? { ...v, available: newAvailable } : v));
+    await supabase.from("product_variants").update({ available: newAvailable }).eq("id", variantId);
+    toast.success(newAvailable ? "Variante visível na loja" : "Variante oculta da loja");
+  };
+
   const toggleProductVisibility = async (productId: string, currentActive: boolean) => {
     const newActive = !currentActive;
     setProducts(prev => prev.map(p => p.id === productId ? { ...p, active: newActive } : p));
     await supabase.from("products").update({ active: newActive }).eq("id", productId);
     toast.success(newActive ? "Produto visível na loja" : "Produto oculto da loja");
+  };
+
+  const bulkToggleVisibility = async (hide: boolean) => {
+    if (!selectedSkus.size) return;
+    const action = hide ? "ocultar" : "mostrar";
+    if (!confirm(`${hide ? "Ocultar" : "Mostrar"} ${selectedSkus.size} SKU(s) na loja?`)) return;
+    
+    const newAvailable = !hide;
+    setVariants(prev => prev.map(v => selectedSkus.has(v.sku) ? { ...v, available: newAvailable } : v));
+    
+    for (const sku of selectedSkus) {
+      const v = variants.find(x => x.sku === sku);
+      if (v) {
+        await supabase.from("product_variants").update({ available: newAvailable }).eq("id", v.id);
+      }
+    }
+    
+    toast.success(`${selectedSkus.size} SKU(s) ${hide ? "ocultos" : "visíveis"} na loja`);
+    setSelectedSkus(new Set());
   };
 
   const toggleSelect = (sku: string) => {
@@ -464,6 +493,12 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
           {selectedSkus.size > 0 && (
             <div className="flex items-center gap-2.5 bg-foreground text-card px-4 py-2.5 rounded-lg mb-3 sticky top-0 z-10">
               <span className="flex-1 text-xs font-bold">{selectedSkus.size} SKU{selectedSkus.size !== 1 ? "s" : ""} selecionado{selectedSkus.size !== 1 ? "s" : ""}</span>
+              <button onClick={() => bulkToggleVisibility(true)} className="px-3 py-1 rounded-md border border-card/30 bg-transparent text-card text-[.72rem] font-semibold cursor-pointer hover:bg-card/15">
+                🚫 Ocultar
+              </button>
+              <button onClick={() => bulkToggleVisibility(false)} className="px-3 py-1 rounded-md border border-card/30 bg-transparent text-card text-[.72rem] font-semibold cursor-pointer hover:bg-card/15">
+                👁 Mostrar
+              </button>
               <button onClick={bulkZero} className="px-3 py-1 rounded-md border border-card/30 bg-transparent text-card text-[.72rem] font-semibold cursor-pointer hover:bg-card/15">
                 Zerar estoque
               </button>
@@ -545,11 +580,11 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
                         </td>
                         <td className="p-2 text-center">
                           <button
-                            onClick={() => toggleProductVisibility(row.productId, row.active)}
-                            className={`text-base cursor-pointer bg-transparent border-none transition-opacity ${row.active ? "opacity-100" : "opacity-30"}`}
-                            title={row.active ? "Visível na loja — clique para ocultar" : "Oculto da loja — clique para mostrar"}
+                            onClick={() => toggleVariantVisibility(row.variantId, row.available)}
+                            className={`text-base cursor-pointer bg-transparent border-none transition-opacity ${row.available ? "opacity-100" : "opacity-30"}`}
+                            title={row.available ? "Variante visível na loja — clique para ocultar" : "Variante oculta da loja — clique para mostrar"}
                           >
-                            {row.active ? "👁" : "🚫"}
+                            {row.available ? "👁" : "🚫"}
                           </button>
                         </td>
                         <td className="p-2">
@@ -846,7 +881,7 @@ function AddItemModal({ onClose, existingProducts, onAdded }: {
           dosage_value: entry.dosage,
           dosage_unit: entry.unit,
           stock_qty: qty,
-          available: qty > 0,
+          available: true,
         });
 
         // Save cost/price to aura_store_sku
