@@ -17,7 +17,7 @@ interface CatalogRow {
     dosage_unit: string;
     price: number | null;
     stock_qty: number;
-    available: boolean;
+    available: boolean | null;
   }>;
 }
 
@@ -44,7 +44,7 @@ export function useStoreCatalog() {
           dosage_value: v.dosage_value,
           dosage_unit: v.dosage_unit,
           price: v.price,
-          stock: v.stock_qty || 0,
+          stock: v.stock_qty ?? 0,
         }));
         map[row.name] = {
           id: row.id,
