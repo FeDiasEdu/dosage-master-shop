@@ -9,6 +9,50 @@ import CartDrawer from "@/components/store/CartDrawer";
 import PeptideInfoModal from "@/components/store/PeptideInfoModal";
 import { toast } from "sonner";
 
+function CategoryNav({ categories, active, onChange }: { categories: string[]; active: string; onChange: (c: string) => void }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 2);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2);
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollRef.current;
+    if (el) el.addEventListener("scroll", checkScroll, { passive: true });
+    window.addEventListener("resize", checkScroll);
+    return () => { el?.removeEventListener("scroll", checkScroll); window.removeEventListener("resize", checkScroll); };
+  }, [categories]);
+
+  return (
+    <div className="relative">
+      {canScrollLeft && <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />}
+      {canScrollRight && <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />}
+      <div ref={scrollRef} className="flex gap-1 px-4 py-2 overflow-x-auto scrollbar-none cursor-grab active:cursor-grabbing" style={{ scrollbarWidth: "none" }}>
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => onChange(cat)}
+            className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold uppercase tracking-wide border transition-colors ${
+              active === cat
+                ? "bg-foreground text-background border-foreground"
+                : "bg-muted text-muted-foreground border-border hover:border-foreground/30"
+            }`}
+          >
+            <span>{CATEGORY_ICONS[cat] || "•"}</span>
+            <span>{CATEGORY_LABELS[cat] || cat}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function StorePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
