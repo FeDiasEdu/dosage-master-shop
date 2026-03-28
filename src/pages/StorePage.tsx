@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CATEGORY_LABELS, CATEGORY_ICONS, type StoreVariant } from "@/data/store-products";
 import { useCartStore } from "@/stores/cart-store";
@@ -89,24 +89,7 @@ export default function StorePage() {
 
       {/* Sticky filter bar */}
       <div className="sticky top-14 z-[91] bg-background border-b border-border backdrop-blur-[18px]">
-        <nav className="overflow-x-auto whitespace-nowrap scrollbar-none px-6 border-b border-border/50">
-          <div className="inline-flex gap-0">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[.06em] border-b-2 transition-all whitespace-nowrap
-                  ${activeCategory === cat
-                    ? "text-foreground border-foreground"
-                    : "text-muted-foreground border-transparent hover:text-foreground hover:border-border"
-                  }`}
-              >
-                <span className="text-[13px] leading-none">{CATEGORY_ICONS[cat] || "📦"}</span>
-                {cat === "all" ? "Todos" : CATEGORY_LABELS[cat] || cat}
-              </button>
-            ))}
-          </div>
-        </nav>
+        <CategoryNav categories={categories} active={activeCategory} onChange={setActiveCategory} />
         <div className="px-6 py-2 flex items-center gap-3">
           <div className="relative flex-1 max-w-[400px] mx-auto">
             <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-[13px] pointer-events-none">⌕</span>
