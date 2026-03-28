@@ -17,7 +17,7 @@ interface CatalogRow {
     dosage_unit: string;
     price: number | null;
     stock_qty: number;
-    available: boolean;
+    available: boolean | null;
   }>;
 }
 
