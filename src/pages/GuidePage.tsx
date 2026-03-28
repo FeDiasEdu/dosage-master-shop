@@ -246,7 +246,7 @@ export default function GuidePage() {
               {group.cards.map((card, ci) => (
                 <div
                   key={`${gi}-${ci}`}
-                  onClick={() => setModalProduct(card.name)}
+                  onClick={() => setModalProduct(card.modalId)}
                   className="bg-card p-5 cursor-pointer transition-colors hover:bg-secondary relative overflow-hidden group"
                 >
                   {/* Hover top line */}

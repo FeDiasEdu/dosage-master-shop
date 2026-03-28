@@ -18,6 +18,7 @@ interface ProductRow {
   name: string;
   category: string;
   slug: string;
+  active: boolean;
 }
 
 interface VariantRow {
@@ -144,7 +145,7 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     setLoading(true);
     try {
       const [prodRes, varRes, skuRes, intRes] = await Promise.all([
-        supabase.from("products").select("id, name, category, slug"),
+        supabase.from("products").select("id, name, category, slug, active"),
         supabase.from("product_variants").select("id, product_id, sku, label, dosage_value, dosage_unit, price, stock_qty, available"),
         supabase.from("aura_store_sku").select("sku, price, stock, cost_price, stock_min"),
         supabase.from("aura_interest").select("sku, count"),
@@ -358,6 +359,13 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     setInterests(prev => { const next = { ...prev }; delete next[sku]; return next; });
     await supabase.from("aura_interest").delete().eq("sku", sku);
     toast.success("Interesse zerado");
+  };
+
+  const toggleProductVisibility = async (productId: string, currentActive: boolean) => {
+    const newActive = !currentActive;
+    setProducts(prev => prev.map(p => p.id === productId ? { ...p, active: newActive } : p));
+    await supabase.from("products").update({ active: newActive }).eq("id", productId);
+    toast.success(newActive ? "Produto visível na loja" : "Produto oculto da loja");
   };
 
   const toggleSelect = (sku: string) => {
