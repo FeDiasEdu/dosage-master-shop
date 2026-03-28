@@ -576,38 +576,6 @@ export type Database = {
           slug: string | null
           variants: Json | null
         }
-        Insert: {
-          active?: boolean | null
-          basic_protocol?: string | null
-          benefits?: string | null
-          category?: string | null
-          guide_key?: string | null
-          half_life?: string | null
-          id?: string | null
-          mechanism_of_action?: string | null
-          name?: string | null
-          reconstitution_guide?: string | null
-          scientific_name?: string | null
-          side_effects?: string | null
-          slug?: string | null
-          variants?: never
-        }
-        Update: {
-          active?: boolean | null
-          basic_protocol?: string | null
-          benefits?: string | null
-          category?: string | null
-          guide_key?: string | null
-          half_life?: string | null
-          id?: string | null
-          mechanism_of_action?: string | null
-          name?: string | null
-          reconstitution_guide?: string | null
-          scientific_name?: string | null
-          side_effects?: string | null
-          slug?: string | null
-          variants?: never
-        }
         Relationships: []
       }
     }
