@@ -98,6 +98,62 @@ export type Database = {
         }
         Relationships: []
       }
+      cart_items: {
+        Row: {
+          cart_id: string
+          created_at: string | null
+          id: string
+          quantity: number
+          sku: string
+          updated_at: string | null
+        }
+        Insert: {
+          cart_id: string
+          created_at?: string | null
+          id?: string
+          quantity?: number
+          sku: string
+          updated_at?: string | null
+        }
+        Update: {
+          cart_id?: string
+          created_at?: string | null
+          id?: string
+          quantity?: number
+          sku?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_items_cart_id_fkey"
+            columns: ["cart_id"]
+            isOneToOne: false
+            referencedRelation: "carts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      carts: {
+        Row: {
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           address: Json | null
@@ -341,43 +397,64 @@ export type Database = {
       products: {
         Row: {
           active: boolean
+          basic_protocol: string | null
+          benefits: string | null
           category: string
           created_at: string | null
           cycle: string | null
           description: string | null
           dosage: string | null
           guide_key: string | null
+          half_life: string | null
           id: string
+          mechanism_of_action: string | null
           name: string
+          reconstitution_guide: string | null
           route: string | null
+          scientific_name: string | null
+          side_effects: string | null
           slug: string
           storage: string | null
         }
         Insert: {
           active?: boolean
+          basic_protocol?: string | null
+          benefits?: string | null
           category: string
           created_at?: string | null
           cycle?: string | null
           description?: string | null
           dosage?: string | null
           guide_key?: string | null
+          half_life?: string | null
           id?: string
+          mechanism_of_action?: string | null
           name: string
+          reconstitution_guide?: string | null
           route?: string | null
+          scientific_name?: string | null
+          side_effects?: string | null
           slug: string
           storage?: string | null
         }
         Update: {
           active?: boolean
+          basic_protocol?: string | null
+          benefits?: string | null
           category?: string
           created_at?: string | null
           cycle?: string | null
           description?: string | null
           dosage?: string | null
           guide_key?: string | null
+          half_life?: string | null
           id?: string
+          mechanism_of_action?: string | null
           name?: string
+          reconstitution_guide?: string | null
           route?: string | null
+          scientific_name?: string | null
+          side_effects?: string | null
           slug?: string
           storage?: string | null
         }
@@ -425,22 +502,117 @@ export type Database = {
         }
         Relationships: []
       }
+      user_interests: {
+        Row: {
+          created_at: string | null
+          id: string
+          sku: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          sku: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          sku?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      users: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          role: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          role?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          role?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
+      interest_counts: {
+        Row: {
+          count: number | null
+          sku: string | null
+        }
+        Relationships: []
+      }
       store_catalog: {
         Row: {
           active: boolean | null
+          basic_protocol: string | null
+          benefits: string | null
           category: string | null
           guide_key: string | null
+          half_life: string | null
           id: string | null
+          mechanism_of_action: string | null
           name: string | null
+          reconstitution_guide: string | null
+          scientific_name: string | null
+          side_effects: string | null
           slug: string | null
           variants: Json | null
+        }
+        Insert: {
+          active?: boolean | null
+          basic_protocol?: string | null
+          benefits?: string | null
+          category?: string | null
+          guide_key?: string | null
+          half_life?: string | null
+          id?: string | null
+          mechanism_of_action?: string | null
+          name?: string | null
+          reconstitution_guide?: string | null
+          scientific_name?: string | null
+          side_effects?: string | null
+          slug?: string | null
+          variants?: never
+        }
+        Update: {
+          active?: boolean | null
+          basic_protocol?: string | null
+          benefits?: string | null
+          category?: string | null
+          guide_key?: string | null
+          half_life?: string | null
+          id?: string | null
+          mechanism_of_action?: string | null
+          name?: string | null
+          reconstitution_guide?: string | null
+          scientific_name?: string | null
+          side_effects?: string | null
+          slug?: string | null
+          variants?: never
         }
         Relationships: []
       }
     }
     Functions: {
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
