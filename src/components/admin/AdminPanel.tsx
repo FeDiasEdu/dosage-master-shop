@@ -57,6 +57,7 @@ interface FlatRow {
   productName: string;
   category: string;
   active: boolean;
+  available: boolean;
   variantId: string;
   sku: string;
   label: string;
@@ -191,8 +192,8 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     for (const prod of products) {
       if (catFilter && prod.category !== catFilter) continue;
       if (q && !prod.name.toLowerCase().includes(q)) continue;
-      if (statusFilter === "visivel" && !prod.active) continue;
-      if (statusFilter === "oculto" && prod.active) continue;
+      if (statusFilter === "visivel" && v.available === false) continue;
+      if (statusFilter === "oculto" && v.available !== false) continue;
 
       const prodVariants = variants.filter(v => v.product_id === prod.id);
       for (const v of prodVariants) {
