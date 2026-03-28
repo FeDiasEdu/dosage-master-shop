@@ -493,6 +493,12 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
           {selectedSkus.size > 0 && (
             <div className="flex items-center gap-2.5 bg-foreground text-card px-4 py-2.5 rounded-lg mb-3 sticky top-0 z-10">
               <span className="flex-1 text-xs font-bold">{selectedSkus.size} SKU{selectedSkus.size !== 1 ? "s" : ""} selecionado{selectedSkus.size !== 1 ? "s" : ""}</span>
+              <button onClick={() => bulkToggleVisibility(true)} className="px-3 py-1 rounded-md border border-card/30 bg-transparent text-card text-[.72rem] font-semibold cursor-pointer hover:bg-card/15">
+                🚫 Ocultar
+              </button>
+              <button onClick={() => bulkToggleVisibility(false)} className="px-3 py-1 rounded-md border border-card/30 bg-transparent text-card text-[.72rem] font-semibold cursor-pointer hover:bg-card/15">
+                👁 Mostrar
+              </button>
               <button onClick={bulkZero} className="px-3 py-1 rounded-md border border-card/30 bg-transparent text-card text-[.72rem] font-semibold cursor-pointer hover:bg-card/15">
                 Zerar estoque
               </button>
