@@ -580,11 +580,11 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
                         </td>
                         <td className="p-2 text-center">
                           <button
-                            onClick={() => toggleProductVisibility(row.productId, row.active)}
-                            className={`text-base cursor-pointer bg-transparent border-none transition-opacity ${row.active ? "opacity-100" : "opacity-30"}`}
-                            title={row.active ? "Visível na loja — clique para ocultar" : "Oculto da loja — clique para mostrar"}
+                            onClick={() => toggleVariantVisibility(row.variantId, row.available)}
+                            className={`text-base cursor-pointer bg-transparent border-none transition-opacity ${row.available ? "opacity-100" : "opacity-30"}`}
+                            title={row.available ? "Variante visível na loja — clique para ocultar" : "Variante oculta da loja — clique para mostrar"}
                           >
-                            {row.active ? "👁" : "🚫"}
+                            {row.available ? "👁" : "🚫"}
                           </button>
                         </td>
                         <td className="p-2">
