@@ -4,6 +4,9 @@ import StorePage from "@/pages/StorePage";
 import GuidePage from "@/pages/GuidePage";
 import CalcPage from "@/pages/CalcPage";
 import AdminPanel from "@/components/admin/AdminPanel";
+import AuthPage from "@/pages/AuthPage";
+import ProfilePage from "@/pages/ProfilePage";
+import { useAuth } from "@/hooks/use-auth";
 import iconInstagram from "@/assets/icon-instagram.png";
 import iconWhatsapp from "@/assets/icon-whatsapp.png";
 import iconGmail from "@/assets/icon-gmail.png";
@@ -13,6 +16,10 @@ type Tab = "guia" | "calc" | "store";
 export default function Index() {
   const [activeTab, setActiveTab] = useState<Tab>("store");
   const [adminOpen, setAdminOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const auth = useAuth();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -33,9 +40,31 @@ export default function Index() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
+  const handleAuth = async (action: "login" | "signup", email: string, password: string, name?: string) => {
+    if (action === "signup") {
+      const { error } = await auth.signUp(email, password, name || "");
+      if (error) return { error: error.message };
+      return { error: null };
+    } else {
+      const { error } = await auth.signIn(email, password);
+      if (error) return { error: error.message };
+      setAuthOpen(false);
+      return { error: null };
+    }
+  };
+
+  const handleResetPassword = async (email: string) => {
+    return auth.resetPassword(email);
+  };
+
   return (
     <>
-      <TopBar activeTab={activeTab} onTabChange={setActiveTab} />
+      <TopBar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        user={auth.user}
+        onAuthClick={() => auth.user ? setProfileOpen(true) : setAuthOpen(true)}
+      />
       {activeTab === "guia" && <GuidePage />}
       {activeTab === "calc" && <CalcPage />}
       {activeTab === "store" && <StorePage />}
@@ -53,33 +82,43 @@ export default function Index() {
           </span>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <a
-            href="https://instagram.com/aura_peptides"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card text-foreground text-[11.5px] font-medium no-underline transition-all hover:bg-secondary hover:border-foreground"
-          >
+          <a href="https://instagram.com/aura_peptides" target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card text-foreground text-[11.5px] font-medium no-underline transition-all hover:bg-secondary hover:border-foreground">
             <img src={iconInstagram} alt="Instagram" className="w-3.5 h-3.5 object-contain" />
             @aura_peptides
           </a>
-          <a
-            href="https://wa.me/5511973616286"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card text-foreground text-[11.5px] font-medium no-underline transition-all hover:bg-secondary hover:border-foreground"
-          >
+          <a href="https://wa.me/5511973616286" target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card text-foreground text-[11.5px] font-medium no-underline transition-all hover:bg-secondary hover:border-foreground">
             <img src={iconWhatsapp} alt="WhatsApp" className="w-3.5 h-3.5 object-contain" />
             (11) 97361-6286
           </a>
-          <a
-            href="mailto:peptides.aura@gmail.com"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card text-foreground text-[11.5px] font-medium no-underline transition-all hover:bg-secondary hover:border-foreground"
-          >
+          <a href="mailto:peptides.aura@gmail.com"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card text-foreground text-[11.5px] font-medium no-underline transition-all hover:bg-secondary hover:border-foreground">
             <img src={iconGmail} alt="Gmail" className="w-3.5 h-3.5 object-contain" />
             peptides.aura@gmail.com
           </a>
         </div>
       </footer>
+
+      {/* Auth */}
+      {authOpen && (
+        <AuthPage
+          onAuth={handleAuth}
+          onResetPassword={handleResetPassword}
+          onClose={() => setAuthOpen(false)}
+        />
+      )}
+
+      {/* Profile */}
+      {profileOpen && auth.user && (
+        <ProfilePage
+          profile={auth.profile}
+          email={auth.user.email || ""}
+          onUpdate={auth.updateProfile}
+          onSignOut={auth.signOut}
+          onClose={() => setProfileOpen(false)}
+        />
+      )}
 
       {/* Admin Panel */}
       <AdminPanel open={adminOpen} onClose={() => setAdminOpen(false)} />
