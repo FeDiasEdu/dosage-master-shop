@@ -145,7 +145,7 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     setLoading(true);
     try {
       const [prodRes, varRes, skuRes, intRes] = await Promise.all([
-        supabase.from("products").select("id, name, category, slug"),
+        supabase.from("products").select("id, name, category, slug, active"),
         supabase.from("product_variants").select("id, product_id, sku, label, dosage_value, dosage_unit, price, stock_qty, available"),
         supabase.from("aura_store_sku").select("sku, price, stock, cost_price, stock_min"),
         supabase.from("aura_interest").select("sku, count"),
