@@ -361,6 +361,13 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     toast.success("Interesse zerado");
   };
 
+  const toggleProductVisibility = async (productId: string, currentActive: boolean) => {
+    const newActive = !currentActive;
+    setProducts(prev => prev.map(p => p.id === productId ? { ...p, active: newActive } : p));
+    await supabase.from("products").update({ active: newActive }).eq("id", productId);
+    toast.success(newActive ? "Produto visível na loja" : "Produto oculto da loja");
+  };
+
   const toggleSelect = (sku: string) => {
     setSelectedSkus(prev => {
       const next = new Set(prev);
