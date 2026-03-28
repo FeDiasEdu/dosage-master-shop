@@ -47,7 +47,10 @@ export default function Index() {
       <footer className="max-w-[1100px] mx-auto px-6 py-5 pb-20 sm:pb-10 border-t border-border">
         <div className="flex justify-between items-center flex-wrap gap-4 mb-4">
           <span className="text-muted-foreground text-[11.5px]">© {new Date().getFullYear()} AURA Peptides</span>
-          <span className="font-mono text-muted-foreground text-[11.5px]">RUO — Research Use Only</span>
+          <span className="inline-flex items-center gap-1.5 font-mono text-[11.5px]">
+            <span className="bg-foreground text-card text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-[2px]">RUO</span>
+            <span className="text-muted-foreground">Research Use Only</span>
+          </span>
         </div>
         <div className="flex gap-2 flex-wrap">
           <a

@@ -1,5 +1,6 @@
 import { useCartStore } from "@/stores/cart-store";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface CartDrawerProps {
   open: boolean;
@@ -9,6 +10,14 @@ interface CartDrawerProps {
 export default function CartDrawer({ open, onClose }: CartDrawerProps) {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCartStore();
 
+  const handleIncrement = (sku: string, currentQty: number, maxStock: number) => {
+    if (currentQty >= maxStock) {
+      toast.error(`Limite de estoque: ${maxStock} unidade(s)`);
+      return;
+    }
+    updateQuantity(sku, currentQty + 1);
+  };
+
   const checkout = () => {
     if (items.length === 0) return;
     const lines = items.map(
@@ -16,12 +25,11 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
     );
     const total = `\n💰 Total: R$ ${totalPrice().toFixed(2).replace(".", ",")}`;
     const msg = encodeURIComponent(`Olá! Gostaria de fazer um pedido:\n\n${lines.join("\n")}${total}`);
-    window.open(`https://wa.me/?text=${msg}`, "_blank");
+    window.open(`https://wa.me/5511973616286?text=${msg}`, "_blank");
   };
 
   return (
     <>
-      {/* Overlay */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -34,7 +42,6 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
         )}
       </AnimatePresence>
 
-      {/* Drawer */}
       <div
         className={`fixed right-0 top-0 bottom-0 w-[min(400px,95vw)] bg-card border-l border-border z-[700] flex flex-col shadow-xl transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
@@ -42,9 +49,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
       >
         <div className="flex justify-between items-center px-5 pt-5 pb-4 border-b border-border shrink-0">
           <span className="font-bold text-base">Carrinho</span>
-          <button onClick={onClose} className="bg-transparent border-none cursor-pointer text-xl text-muted-foreground">
-            ✕
-          </button>
+          <button onClick={onClose} className="bg-transparent border-none cursor-pointer text-xl text-muted-foreground">✕</button>
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-3">
@@ -55,27 +60,24 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
               <div key={item.sku} className="flex gap-2.5 items-start py-2.5 border-b border-border last:border-b-0">
                 <div className="flex-1">
                   <div className="text-[.82rem] font-bold text-foreground">{item.productName}</div>
-                  <div className="text-[.72rem] text-muted-foreground mt-0.5">{item.label}</div>
+                  <div className="text-[.72rem] text-muted-foreground mt-0.5">
+                    {item.label}
+                    {item.maxStock > 0 && <span className="ml-1 opacity-60">(máx: {item.maxStock})</span>}
+                  </div>
                   <div className="flex items-center gap-1.5 mt-1.5">
                     <button
                       onClick={() => updateQuantity(item.sku, item.quantity - 1)}
                       className="w-6 h-6 rounded-full border border-border bg-transparent cursor-pointer text-sm text-foreground flex items-center justify-center hover:bg-secondary"
-                    >
-                      −
-                    </button>
+                    >−</button>
                     <span className="text-sm font-bold min-w-[20px] text-center">{item.quantity}</span>
                     <button
-                      onClick={() => updateQuantity(item.sku, item.quantity + 1)}
+                      onClick={() => handleIncrement(item.sku, item.quantity, item.maxStock)}
                       className="w-6 h-6 rounded-full border border-border bg-transparent cursor-pointer text-sm text-foreground flex items-center justify-center hover:bg-secondary"
-                    >
-                      +
-                    </button>
+                    >+</button>
                     <button
                       onClick={() => removeItem(item.sku)}
                       className="ml-2 text-xs text-destructive cursor-pointer bg-transparent border-none"
-                    >
-                      Remover
-                    </button>
+                    >Remover</button>
                   </div>
                 </div>
                 <div className="text-[.82rem] font-bold text-foreground whitespace-nowrap">
