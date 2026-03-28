@@ -202,6 +202,7 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
         if (statusFilter === "ativo" && !avail) continue;
         if (statusFilter === "inativo" && avail) continue;
         if (statusFilter === "baixo" && !isBaixo) continue;
+        if (statusFilter === "interesse" && !(interests[v.sku] > 0)) continue;
 
         result.push({
           productId: prod.id,
@@ -246,21 +247,24 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
     return { total, ativos, valor, baixo, totalInt };
   }, [variants, skuData, interests]);
 
-  // Field update handlers
+  // Field update handlers — optimistic update (no full reload, no scroll jump)
   const handleFieldChange = async (sku: string, variantId: string, field: string, value: string) => {
     const numVal = value === "" ? null : parseFloat(value);
 
     if (field === "price") {
+      setVariants(prev => prev.map(v => v.id === variantId ? { ...v, price: numVal } : v));
       await supabase.from("product_variants").update({ price: numVal }).eq("id", variantId);
     } else if (field === "stock") {
-      await supabase.from("product_variants").update({ stock_qty: numVal ?? 0 }).eq("id", variantId);
+      const stockVal = numVal ?? 0;
+      setVariants(prev => prev.map(v => v.id === variantId ? { ...v, stock_qty: stockVal } : v));
+      await supabase.from("product_variants").update({ stock_qty: stockVal }).eq("id", variantId);
     } else if (field === "cost_price" || field === "stock_min") {
+      setSkuData(prev => ({ ...prev, [sku]: { ...prev[sku], sku, [field]: numVal ?? 0, stock: prev[sku]?.stock ?? 0, price: prev[sku]?.price ?? null, cost_price: prev[sku]?.cost_price ?? null, stock_min: prev[sku]?.stock_min ?? 0 } }));
       await supabase.from("aura_store_sku").upsert(
         { sku, [field]: numVal ?? 0 },
         { onConflict: "sku" }
       );
     }
-    await loadData();
   };
 
   const handleMovement = async (sku: string, pname: string, label: string, type: string, qty: number, cost: number | null, notes: string) => {
@@ -438,6 +442,7 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
               <option value="ativo">Ativo (em estoque)</option>
               <option value="inativo">Inativo (zerado)</option>
               <option value="baixo">Abaixo do mínimo</option>
+              <option value="interesse">🔔 Com interesse</option>
             </select>
           </div>
 
