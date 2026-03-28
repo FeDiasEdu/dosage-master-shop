@@ -1,53 +1,65 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { STORE_PRODUCTS, CATEGORY_LABELS, CATEGORY_ICONS, type StoreVariant } from "@/data/store-products";
+import { CATEGORY_LABELS, CATEGORY_ICONS, type StoreVariant } from "@/data/store-products";
 import { useCartStore } from "@/stores/cart-store";
+import { useStoreCatalog } from "@/hooks/use-store-catalog";
+import { useInterest } from "@/hooks/use-interest";
 import StoreCard from "@/components/store/StoreCard";
 import CartDrawer from "@/components/store/CartDrawer";
 import PeptideInfoModal from "@/components/store/PeptideInfoModal";
+import { toast } from "sonner";
 
 export default function StorePage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showInterestOnly, setShowInterestOnly] = useState(false);
   const [infoProduct, setInfoProduct] = useState<string | null>(null);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  const { products, loading } = useStoreCatalog();
+  const { toggleInterest, hasInterest } = useInterest();
   const cartStore = useCartStore();
 
   const categories = useMemo(() => {
     const cats = new Set<string>();
-    Object.values(STORE_PRODUCTS).forEach((p) => cats.add(p.category));
+    Object.values(products).forEach((p) => cats.add(p.category));
     return ["all", ...Array.from(cats).sort()];
-  }, []);
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     const q = searchQuery.toLowerCase();
-    return Object.entries(STORE_PRODUCTS)
+    return Object.entries(products)
       .filter(([name, product]) => {
         const catMatch = activeCategory === "all" || product.category === activeCategory;
         const searchMatch = !q || name.toLowerCase().includes(q) ||
           product.variants.some((v) => v.label.toLowerCase().includes(q) || v.sku.toLowerCase().includes(q));
-        return catMatch && searchMatch;
+        const interestMatch = !showInterestOnly || product.variants.some((v) => hasInterest(v.sku));
+        return catMatch && searchMatch && interestMatch;
       })
       .sort(([a], [b]) => a.localeCompare(b));
-  }, [activeCategory, searchQuery]);
-
-  const [cartOpen, setCartOpen] = useState(false);
+  }, [activeCategory, searchQuery, showInterestOnly, products, hasInterest]);
 
   const handleAddToCart = (productName: string, variant: StoreVariant) => {
     if (variant.price === null || variant.stock <= 0) return;
-    cartStore.addItem({
+    const added = cartStore.addItem({
       productName,
       sku: variant.sku,
       label: variant.label,
       price: variant.price,
+      maxStock: variant.stock,
     });
+    if (!added) {
+      toast.error(`Limite de estoque atingido (${variant.stock} un.)`);
+    }
   };
 
-  const handleNotify = (productName: string, variant: StoreVariant) => {
-    // Increment interest count in localStorage
-    const interest = JSON.parse(localStorage.getItem("aura_interest") || "{}");
-    interest[variant.sku] = (interest[variant.sku] || 0) + 1;
-    localStorage.setItem("aura_interest", JSON.stringify(interest));
-    alert(`✅ Interesse registrado para ${productName} — ${variant.label}!\nObrigado, entraremos em contato.`);
+  const handleNotify = async (productName: string, variant: StoreVariant) => {
+    const isNowInterested = await toggleInterest(variant.sku);
+    if (isNowInterested) {
+      toast.success(`Interesse registrado para ${productName} — ${variant.label}`);
+    } else {
+      toast.info(`Interesse removido para ${productName} — ${variant.label}`);
+    }
   };
 
   return (
@@ -97,7 +109,7 @@ export default function StorePage() {
             ))}
           </div>
         </nav>
-        <div className="px-6 py-2 flex items-center">
+        <div className="px-6 py-2 flex items-center gap-3">
           <div className="relative flex-1 max-w-[400px] mx-auto">
             <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground text-[13px] pointer-events-none">⌕</span>
             <input
@@ -108,40 +120,57 @@ export default function StorePage() {
               className="w-full bg-card border border-border rounded-lg py-1.5 pl-8 pr-3 text-foreground text-xs outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground"
             />
           </div>
+          <button
+            onClick={() => setShowInterestOnly(!showInterestOnly)}
+            className={`shrink-0 px-3 py-1.5 rounded-lg border text-[11px] font-semibold transition-all cursor-pointer ${
+              showInterestOnly
+                ? "bg-amber-500/20 border-amber-500 text-amber-600 dark:text-amber-300"
+                : "bg-card border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+            }`}
+          >
+            🔔 Interesse
+          </button>
         </div>
       </div>
 
       {/* Product grid */}
       <div className="max-w-[1100px] mx-auto px-6 pb-20">
-        <p className="font-mono text-[10px] font-semibold tracking-[.15em] text-muted-foreground uppercase mt-7 mb-3.5 pb-2.5 border-b border-border">
-          {filteredProducts.length} produto{filteredProducts.length !== 1 ? "s" : ""} disponíve{filteredProducts.length !== 1 ? "is" : "l"}
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border rounded-[14px] overflow-hidden">
-          <AnimatePresence mode="popLayout">
-            {filteredProducts.map(([name, product]) => (
-              <motion.div
-                key={name}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-              >
-                <StoreCard
-                  name={name}
-                  product={product}
-                  onAddToCart={(variant) => handleAddToCart(name, variant)}
-                  onNotify={handleNotify}
-                  onInfo={(productName) => setInfoProduct(productName)}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-16 text-muted-foreground text-sm">
-            Nenhum produto encontrado.
-          </div>
+        {loading ? (
+          <div className="text-center py-16 text-muted-foreground text-sm">Carregando catálogo…</div>
+        ) : (
+          <>
+            <p className="font-mono text-[10px] font-semibold tracking-[.15em] text-muted-foreground uppercase mt-7 mb-3.5 pb-2.5 border-b border-border">
+              {filteredProducts.length} produto{filteredProducts.length !== 1 ? "s" : ""} disponíve{filteredProducts.length !== 1 ? "is" : "l"}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border rounded-[14px] overflow-hidden">
+              <AnimatePresence mode="popLayout">
+                {filteredProducts.map(([name, product]) => (
+                  <motion.div
+                    key={name}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <StoreCard
+                      name={name}
+                      product={product}
+                      onAddToCart={(variant) => handleAddToCart(name, variant)}
+                      onNotify={(pname, variant) => handleNotify(pname, variant)}
+                      onInfo={(productName) => setInfoProduct(productName)}
+                      isInterested={hasInterest}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+            {filteredProducts.length === 0 && (
+              <div className="text-center py-16 text-muted-foreground text-sm">
+                Nenhum produto encontrado.
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -155,14 +184,8 @@ export default function StorePage() {
         </button>
       )}
 
-      {/* Cart Drawer */}
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
-
-      {/* Info Modal */}
-      <PeptideInfoModal
-        productName={infoProduct}
-        onClose={() => setInfoProduct(null)}
-      />
+      <PeptideInfoModal productName={infoProduct} onClose={() => setInfoProduct(null)} />
     </div>
   );
 }

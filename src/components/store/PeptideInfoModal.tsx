@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { STORE_PRODUCTS, CATEGORY_LABELS } from "@/data/store-products";
+import { useStoreCatalog } from "@/hooks/use-store-catalog";
+import { CATEGORY_LABELS } from "@/data/store-products";
 
 interface PeptideInfoModalProps {
   productName: string | null;
@@ -7,13 +8,13 @@ interface PeptideInfoModalProps {
 }
 
 export default function PeptideInfoModal({ productName, onClose }: PeptideInfoModalProps) {
-  const product = productName ? STORE_PRODUCTS[productName] : null;
+  const { products } = useStoreCatalog();
+  const product = productName ? products[productName] : null;
 
   return (
     <AnimatePresence>
       {productName && product && (
         <>
-          {/* Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -21,8 +22,6 @@ export default function PeptideInfoModal({ productName, onClose }: PeptideInfoMo
             className="fixed inset-0 bg-foreground/80 backdrop-blur-sm z-[2000]"
             onClick={onClose}
           />
-
-          {/* Modal */}
           <motion.div
             initial={{ opacity: 0, y: 16, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -30,10 +29,7 @@ export default function PeptideInfoModal({ productName, onClose }: PeptideInfoMo
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-4 sm:inset-auto sm:top-[5%] sm:left-1/2 sm:-translate-x-1/2 sm:w-full sm:max-w-[640px] sm:max-h-[90vh] z-[2001] bg-card border border-border rounded-2xl overflow-hidden flex flex-col shadow-2xl"
           >
-            {/* Gradient bar */}
             <div className="h-1 bg-gradient-to-r from-purple-400 via-blue-400 to-emerald-400 shrink-0" />
-
-            {/* Header */}
             <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-border shrink-0">
               <div>
                 <h2 className="text-xl font-black tracking-tight text-foreground">{productName}</h2>
@@ -48,10 +44,7 @@ export default function PeptideInfoModal({ productName, onClose }: PeptideInfoMo
                 ✕
               </button>
             </div>
-
-            {/* Body */}
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
-              {/* Quick pills */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="border border-border rounded-lg p-3 bg-background">
                   <div className="text-[.6rem] font-bold uppercase tracking-wider text-muted-foreground">💉 Categoria</div>
@@ -71,7 +64,6 @@ export default function PeptideInfoModal({ productName, onClose }: PeptideInfoMo
                 </div>
               </div>
 
-              {/* Variants */}
               <div>
                 <h3 className="text-[.65rem] font-bold uppercase tracking-wider text-muted-foreground mb-2 pb-1.5 border-b border-border">
                   📦 Dosagens Disponíveis
@@ -95,7 +87,6 @@ export default function PeptideInfoModal({ productName, onClose }: PeptideInfoMo
                 </div>
               </div>
 
-              {/* Research info */}
               <div>
                 <h3 className="text-[.65rem] font-bold uppercase tracking-wider text-muted-foreground mb-2 pb-1.5 border-b border-border">
                   📖 Informações de Pesquisa
@@ -109,7 +100,6 @@ export default function PeptideInfoModal({ productName, onClose }: PeptideInfoMo
                 </p>
               </div>
 
-              {/* Disclaimer */}
               <div className="border-t border-border pt-4 text-[.7rem] text-muted-foreground italic leading-relaxed">
                 ⚠ Informação estritamente educativa e científica. Não constitui prescrição ou orientação médica.
                 Consulte sempre um profissional de saúde habilitado antes de utilizar qualquer substância.
