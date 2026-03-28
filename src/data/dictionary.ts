@@ -1,4 +1,4 @@
-// 418 entries from Dicionário AURA
+// Auto-generated from Dicionário AURA
 export interface DictEntry {
   sku: string; name: string; dosage: number; unit: string; cost: number | null; price: number | null;
 }
@@ -27,7 +27,7 @@ export const AURA_DICTIONARY: DictEntry[] = [
   { sku: "AR100", name: "AICAR", dosage: 100, unit: "MG", cost: 24.73, price: 249.9 },
   { sku: "PRO20", name: "Alprostadil", dosage: 20, unit: "MCG", cost: 21.2, price: 219.9 },
   { sku: "AM5", name: "Amylin", dosage: 5, unit: "MG", cost: 28.27, price: 289.9 },
-  { sku: "AG5", name: "Angiotensin (17)", dosage: 5, unit: "MG", cost: 31.8, price: 319.9 },
+  { sku: "AG5", name: "Angiotensin (1\u00967)", dosage: 5, unit: "MG", cost: 31.8, price: 319.9 },
   { sku: "2AD", name: "AOD-9604", dosage: 2, unit: "MG", cost: 12.37, price: 129.9 },
   { sku: "5AD", name: "AOD-9604", dosage: 5, unit: "MG", cost: null, price: null },
   { sku: "AD5", name: "AOD-9604", dosage: 5, unit: "MG", cost: 40.63, price: 409.9 },
@@ -128,22 +128,13 @@ export const AURA_DICTIONARY: DictEntry[] = [
   { sku: "FRG10", name: "Frag 17-23", dosage: 10, unit: "MG", cost: 17.67, price: 179.9 },
   { sku: "FAP5", name: "FTPP Adipotide", dosage: 5, unit: "MG", cost: null, price: null },
   { sku: "G610", name: "G-610", dosage: 10, unit: "MG", cost: 9.72, price: 99.9 },
-  { sku: "SZ352", name: "Gaba 100mg
-Histidine 100mg
-L-Theanine 50mg
-Taurine 100mg
-Melatonin 2mg
-LICOCAINE 0.2%", dosage: 352, unit: "MG", cost: null, price: null },
+  { sku: "SZ352", name: "Gaba 100mg\nHistidine 100mg\nL-Theanine 50mg\nTaurine 100mg\nMelatonin 2mg\nLICOCAINE 0.2%", dosage: 352, unit: "MG", cost: null, price: null },
   { sku: "GDF1", name: "GDF-8", dosage: 1, unit: "MG", cost: 33.57, price: 339.9 },
   { sku: "GH50", name: "GHK Basic", dosage: 50, unit: "MG", cost: 15.9, price: 159.9 },
   { sku: "CU2", name: "GHK-Cu", dosage: 2, unit: "MG", cost: null, price: null },
   { sku: "CU50", name: "GHK-Cu", dosage: 50, unit: "MG", cost: 11.48, price: 119.9 },
   { sku: "CU100", name: "GHK-Cu", dosage: 100, unit: "MG", cost: 13.25, price: 139.9 },
-  { sku: "GGH", name: "GHK-CU 2000mcg
-Glutathione 200mg
-Histidine 100mg
-Clycine 50mg
-NADH 50mg", dosage: 402, unit: "MG", cost: null, price: null },
+  { sku: "GGH", name: "GHK-CU 2000mcg\nGlutathione 200mg\nHistidine 100mg\nClycine 50mg\nNADH 50mg", dosage: 402, unit: "MG", cost: null, price: null },
   { sku: "GHL10", name: "Ghrelin", dosage: 10, unit: "MG", cost: 31.8, price: 319.9 },
   { sku: "G25", name: "GHRP-2", dosage: 5, unit: "MG", cost: 7.07, price: 79.9 },
   { sku: "G210", name: "GHRP-2", dosage: 10, unit: "MG", cost: 9.72, price: 99.9 },
@@ -430,5 +421,5 @@ NADH 50mg", dosage: 402, unit: "MG", cost: null, price: null },
   { sku: "VI20", name: "Vilon", dosage: 20, unit: "MG", cost: 33.57, price: 339.9 },
   { sku: "VIP5", name: "VIP", dosage: 5, unit: "MG", cost: 24.73, price: 249.9 },
   { sku: "VIP10", name: "VIP", dosage: 10, unit: "MG", cost: 37.1, price: 369.9 },
-  { sku: "D320", name: "Vitamin D3", dosage: 20000, unit: "IU", cost: null, price: null }
+  { sku: "D320", name: "Vitamin D3", dosage: 20000, unit: "IU", cost: null, price: null },
 ];
