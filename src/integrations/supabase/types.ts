@@ -245,7 +245,7 @@ export type Database = {
           shipped_at: string | null
           shipping: number
           shipping_address: Json | null
-          status: string
+          status: Database["public"]["Enums"]["order_status"]
           subtotal: number
           total: number
         }
@@ -261,7 +261,7 @@ export type Database = {
           shipped_at?: string | null
           shipping?: number
           shipping_address?: Json | null
-          status?: string
+          status?: Database["public"]["Enums"]["order_status"]
           subtotal?: number
           total?: number
         }
@@ -277,7 +277,7 @@ export type Database = {
           shipped_at?: string | null
           shipping?: number
           shipping_address?: Json | null
-          status?: string
+          status?: Database["public"]["Enums"]["order_status"]
           subtotal?: number
           total?: number
         }
@@ -585,7 +585,7 @@ export type Database = {
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
-      [_ in never]: never
+      order_status: "pending" | "paid" | "cancelled" | "shipped" | "delivered"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -712,6 +712,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      order_status: ["pending", "paid", "cancelled", "shipped", "delivered"],
+    },
   },
 } as const
