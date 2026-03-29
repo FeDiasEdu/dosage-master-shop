@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useCartStore } from "@/stores/cart-store";
+import { supabase } from "@/integrations/supabase/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -9,6 +11,7 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ open, onClose }: CartDrawerProps) {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCartStore();
+  const [checkingOut, setCheckingOut] = useState(false);
 
   const handleIncrement = (sku: string, currentQty: number, maxStock: number) => {
     if (currentQty >= maxStock) {
@@ -18,14 +21,87 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
     updateQuantity(sku, currentQty + 1);
   };
 
-  const checkout = () => {
+  const checkout = async () => {
     if (items.length === 0) return;
-    const lines = items.map(
-      (i) => `• ${i.productName} (${i.label}) × ${i.quantity} = R$ ${(i.price * i.quantity).toFixed(2).replace(".", ",")}`
-    );
-    const total = `\n💰 Total: R$ ${totalPrice().toFixed(2).replace(".", ",")}`;
-    const msg = encodeURIComponent(`Olá! Gostaria de fazer um pedido:\n\n${lines.join("\n")}${total}`);
-    window.open(`https://wa.me/5511973616286?text=${msg}`, "_blank");
+
+    setCheckingOut(true);
+    try {
+      // Check auth
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // FASE 5: Revalidate stock before checkout
+      const skus = items.map(i => i.sku);
+      const { data: currentVariants } = await supabase
+        .from("product_variants")
+        .select("sku, stock_qty, price")
+        .in("sku", skus);
+
+      const stockMap = new Map(currentVariants?.map(v => [v.sku, v]) || []);
+      const issues: string[] = [];
+
+      for (const item of items) {
+        const variant = stockMap.get(item.sku);
+        if (!variant) {
+          issues.push(`${item.productName} (${item.label}): produto indisponível`);
+        } else if (variant.stock_qty < item.quantity) {
+          issues.push(`${item.productName} (${item.label}): apenas ${variant.stock_qty} em estoque`);
+        }
+      }
+
+      if (issues.length > 0) {
+        toast.error(`Estoque insuficiente:\n${issues.join("\n")}`);
+        setCheckingOut(false);
+        return;
+      }
+
+      // FASE 4: Create order record if user is authenticated
+      if (user) {
+        const subtotal = totalPrice();
+        const { data: order, error: orderError } = await supabase
+          .from("orders")
+          .insert({
+            customer_id: user.id,
+            subtotal,
+            shipping: 0,
+            total: subtotal,
+            status: "pending",
+            payment_status: "pending",
+            payment_method: "whatsapp",
+            notes: "Pedido via WhatsApp",
+          })
+          .select("id")
+          .single();
+
+        if (orderError) {
+          console.error("Order creation error:", orderError);
+        } else if (order) {
+          const orderItems = items.map(i => ({
+            order_id: order.id,
+            product_name: i.productName,
+            variant_label: i.label,
+            unit_price: i.price,
+            quantity: i.quantity,
+            subtotal: i.price * i.quantity,
+          }));
+
+          await supabase.from("order_items").insert(orderItems);
+        }
+      }
+
+      // Send to WhatsApp
+      const lines = items.map(
+        (i) => `• ${i.productName} (${i.label}) × ${i.quantity} = R$ ${(i.price * i.quantity).toFixed(2).replace(".", ",")}`
+      );
+      const total = `\n💰 Total: R$ ${totalPrice().toFixed(2).replace(".", ",")}`;
+      const msg = encodeURIComponent(`Olá! Gostaria de fazer um pedido:\n\n${lines.join("\n")}${total}`);
+      window.open(`https://wa.me/5511973616286?text=${msg}`, "_blank");
+      clearCart();
+    } catch (err) {
+      console.error("Checkout error:", err);
+      toast.error("Erro ao finalizar pedido. Tente novamente.");
+    } finally {
+      setCheckingOut(false);
+    }
   };
 
   return (
@@ -97,10 +173,10 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
           </div>
           <button
             onClick={checkout}
-            disabled={items.length === 0}
+            disabled={items.length === 0 || checkingOut}
             className="w-full py-3 rounded-xl bg-foreground text-card border-none text-[.9rem] font-bold cursor-pointer font-sans hover:opacity-85 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Finalizar pedido via WhatsApp
+            {checkingOut ? "Verificando estoque…" : "Finalizar pedido via WhatsApp"}
           </button>
           <p className="text-[.7rem] text-muted-foreground text-center mt-2">
             Você será direcionado ao WhatsApp para confirmar
