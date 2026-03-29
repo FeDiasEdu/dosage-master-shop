@@ -64,7 +64,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
             subtotal,
             shipping: 0,
             total: subtotal,
-            status: "pending",
+            status: "pending" as any,
             payment_status: "pending",
             payment_method: "whatsapp",
             notes: "Pedido via WhatsApp",
@@ -74,7 +74,13 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
 
         if (orderError) {
           console.error("Order creation error:", orderError);
+          if (orderError.message?.includes("duplicado")) {
+            toast.error("Pedido já foi criado. Aguarde alguns segundos.");
+            setCheckingOut(false);
+            return;
+          }
         } else if (order) {
+          // Use snapshot prices from cart (not current DB prices)
           const orderItems = items.map(i => ({
             order_id: order.id,
             variant_id: i.variantId,
@@ -85,7 +91,11 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
             subtotal: i.price * i.quantity,
           }));
 
-          await supabase.from("order_items").insert(orderItems);
+          const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
+          if (itemsError) {
+            console.error("Order items error:", itemsError);
+            toast.error("Erro ao salvar itens do pedido.");
+          }
         }
       }
 
