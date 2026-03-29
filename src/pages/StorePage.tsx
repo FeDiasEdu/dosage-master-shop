@@ -32,7 +32,7 @@ export default function StorePage() {
       .filter(([name, product]) => {
         const catMatch = activeCategory === "all" || product.category === activeCategory;
         const searchMatch = !q || name.toLowerCase().includes(q) ||
-          product.variants.some((v) => v.label.toLowerCase().includes(q) || v.sku.toLowerCase().includes(q));
+          product.variants.some((v) => v.label?.toLowerCase().includes(q) || v.sku?.toLowerCase().includes(q));
         return catMatch && searchMatch;
       })
       .sort(([a], [b]) => a.localeCompare(b));
