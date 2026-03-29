@@ -77,6 +77,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
         } else if (order) {
           const orderItems = items.map(i => ({
             order_id: order.id,
+            variant_id: i.variantId,
             product_name: i.productName,
             variant_label: i.label,
             unit_price: i.price,
