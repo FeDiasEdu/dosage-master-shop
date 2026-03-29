@@ -39,9 +39,10 @@ export default function StorePage() {
   }, [activeCategory, searchQuery, products]);
 
   const handleAddToCart = (productName: string, variant: StoreVariant) => {
-    if (variant.price === null || variant.stock <= 0) return;
+    if (variant.price === null || variant.stock <= 0 || !variant.id) return;
     const added = cartStore.addItem({
       productName,
+      variantId: variant.id,
       sku: variant.sku,
       label: variant.label,
       price: variant.price,

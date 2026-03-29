@@ -20,6 +20,7 @@ export type StoreProductMap = Record<string, StoreProduct>;
 
 export interface CartItem {
   productName: string;
+  variantId: string;
   sku: string;
   label: string;
   price: number;
