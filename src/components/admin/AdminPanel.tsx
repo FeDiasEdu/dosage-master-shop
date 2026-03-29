@@ -94,11 +94,6 @@ function detectCategory(name: string): string {
   return DICT_CATEGORIES[name] || "suprimentos";
 }
 
-async function sha256(str: string) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
 interface AdminPanelProps {
   open: boolean;
   onClose: () => void;
@@ -106,8 +101,7 @@ interface AdminPanelProps {
 
 export default function AdminPanel({ open, onClose }: AdminPanelProps) {
   const [authed, setAuthed] = useState(false);
-  const [passInput, setPassInput] = useState("");
-  const [passError, setPassError] = useState("");
+  const [checkingAuth, setCheckingAuth] = useState(false);
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
