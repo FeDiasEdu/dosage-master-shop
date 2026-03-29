@@ -190,9 +190,9 @@ export type Database = {
           order_id: string
           product_name: string
           quantity: number
-          subtotal: number | null
+          subtotal: number
           unit_price: number
-          variant_id: string | null
+          variant_id: string
           variant_label: string
         }
         Insert: {
@@ -200,9 +200,9 @@ export type Database = {
           order_id: string
           product_name: string
           quantity?: number
-          subtotal?: number | null
+          subtotal?: number
           unit_price: number
-          variant_id?: string | null
+          variant_id: string
           variant_label: string
         }
         Update: {
@@ -210,9 +210,9 @@ export type Database = {
           order_id?: string
           product_name?: string
           quantity?: number
-          subtotal?: number | null
+          subtotal?: number
           unit_price?: number
-          variant_id?: string | null
+          variant_id?: string
           variant_label?: string
         }
         Relationships: [
