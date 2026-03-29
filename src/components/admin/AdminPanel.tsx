@@ -71,7 +71,7 @@ interface FlatRow {
   isBaixo: boolean;
 }
 
-const ADMIN_PASS_HASH = "6a6ad96e112ba326ab8d8e381f933e192cb27f6695926a52c5a1b41afb714add";
+// Admin auth is now handled via Supabase Auth + is_admin() RLS
 
 const MOV_TYPES = [
   { id: "entrada", label: "📥 Entrada", dir: 1 },
@@ -125,22 +125,20 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (open && sessionStorage.getItem("aura_admin_auth") === ADMIN_PASS_HASH) {
-      setAuthed(true);
+    if (open) {
+      setCheckingAuth(true);
+      supabase.rpc("is_admin", { _user_id: "" }).then(() => {});
+      supabase.auth.getUser().then(async ({ data: { user } }) => {
+        if (user) {
+          const { data } = await supabase.rpc("is_admin", { _user_id: user.id });
+          setAuthed(!!data);
+        } else {
+          setAuthed(false);
+        }
+        setCheckingAuth(false);
+      });
     }
   }, [open]);
-
-  const handleLogin = async () => {
-    const h = await sha256(passInput);
-    if (h === ADMIN_PASS_HASH) {
-      sessionStorage.setItem("aura_admin_auth", h);
-      setAuthed(true);
-      setPassError("");
-    } else {
-      setPassError("❌ Senha incorreta.");
-      setPassInput("");
-    }
-  };
 
   // Load all data from Supabase
   const loadData = useCallback(async () => {
@@ -424,20 +422,11 @@ export default function AdminPanel({ open, onClose }: AdminPanelProps) {
         <div className="fixed inset-0 z-[3000] bg-background flex flex-col items-center justify-center gap-5">
           <div className="bg-card border border-border rounded-2xl p-9 w-[min(360px,92vw)] text-center">
             <h3 className="text-xl font-extrabold mb-1.5">🔒 Painel Admin</h3>
-            <p className="text-xs text-muted-foreground mb-5">Digite a senha para acessar o estoque.</p>
-            <input
-              type="password"
-              value={passInput}
-              onChange={e => setPassInput(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && handleLogin()}
-              placeholder="Senha"
-              className="w-full px-3.5 py-2.5 border border-border rounded-lg bg-secondary text-foreground text-sm mb-2.5 outline-none focus:border-foreground"
-              autoFocus
-            />
-            <button onClick={handleLogin} className="w-full py-3 rounded-lg bg-foreground text-card border-none text-sm font-bold cursor-pointer">
-              Entrar
-            </button>
-            {passError && <p className="text-xs text-destructive mt-2">{passError}</p>}
+            {checkingAuth ? (
+              <p className="text-xs text-muted-foreground">Verificando permissões…</p>
+            ) : (
+              <p className="text-xs text-muted-foreground">Acesso restrito. Faça login com uma conta admin para continuar.</p>
+            )}
           </div>
           <button onClick={onClose} className="text-muted-foreground text-xs cursor-pointer bg-transparent border-none hover:text-foreground">← Voltar</button>
         </div>
