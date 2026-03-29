@@ -38,7 +38,7 @@ export function useStoreCatalog() {
       for (const row of (data as unknown as CatalogRow[]) || []) {
         if (!row.name || !row.active) continue;
         const variants: StoreVariant[] = (row.variants || [])
-          .filter((v) => v.available !== false)
+          .filter((v) => v && v.id && v.available !== false)
           .map((v) => ({
             id: v.id,
             sku: v.sku,
