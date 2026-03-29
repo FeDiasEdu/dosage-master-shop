@@ -40,10 +40,38 @@ export default function Index() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
-  const handleAuth = async (action: "login" | "signup", email: string, password: string, name?: string) => {
+  const handleAuth = async (action: "login" | "signup", email: string, password: string, name?: string, extra?: any) => {
     if (action === "signup") {
       const { error } = await auth.signUp(email, password, name || "");
       if (error) return { error: error.message };
+      // Save profile data (phone, cpf, address) after signup
+      if (extra) {
+        // Wait briefly for auth state to propagate
+        setTimeout(async () => {
+          const { data: { user } } = await (await import("@/integrations/supabase/client")).supabase.auth.getUser();
+          if (user) {
+            await (await import("@/integrations/supabase/client")).supabase
+              .from("customers")
+              .upsert({
+                id: user.id,
+                email,
+                name: name || "",
+                phone: extra.phone || null,
+                cpf: extra.cpf?.replace(/\D/g, "") || null,
+                address: {
+                  cep: extra.cep?.replace(/\D/g, "") || "",
+                  street: extra.street || "",
+                  number: extra.number || "",
+                  complement: extra.complement || "",
+                  neighborhood: extra.neighborhood || "",
+                  city: extra.city || "",
+                  state: extra.state || "",
+                },
+              }, { onConflict: "id" });
+            auth.refetchProfile();
+          }
+        }, 500);
+      }
       return { error: null };
     } else {
       const { error } = await auth.signIn(email, password);
