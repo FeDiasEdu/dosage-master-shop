@@ -1,0 +1,357 @@
+Codigo_Interno,Pepítideo,Dosagem,Unidade
+5AM,5-Amino-1MQ,5,MG
+10AM,5-Amino-1MQ,10,MG
+50AM,5-Amino-1MQ,50,MG
+AE1,ACE-031,1,MG
+AA3,Acetic Acid,3,ML
+AA10,Acetic Acid,10,ML
+AD5,Adamax,5,MG
+AD10,Adamax,10,MG
+AP2,Adipotide,2,MG
+AP5,Adipotide,5,MG
+AP10,Adipotide,10,MG
+AR50,AICAR,50,MG
+AR100,AICAR,100,MG
+2AD,AOD-9604,2,MG
+5AD,AOD-9604,5,MG
+10AD,AOD-9604,10,MG
+RA10,ARA-290,10,MG
+BA3,BAC Water,3,ML
+BA10,BAC Water,10,ML
+XT100,Botulinum Toxin,100,IU
+BC2,BPC-157,2,MG
+BC5,BPC-157,5,MG
+BC10,BPC-157,10,MG
+BB10,BPC-157 + TB-500,10,MG
+BB20,BPC-157 + TB-500,20,MG
+BB30,BPC-157 + TB-500,30,MG
+CGL2,Cagrilintide,2,MG
+CGL5,Cagrilintide,5,MG
+CGL10,Cagrilintide,10,MG
+CS5,Cagrilintide + Semaglutide,5,MG
+CS10,Cagrilintide + Semaglutide,10,MG
+CS20,Cagrilintide + Semaglutide,20,MG
+CBL60,Cerebrolysin,60,MG
+CND5,CJC-1295 (no DAC),5,MG
+CND10,CJC-1295 (no DAC),10,MG
+CP10,CJC-1295 (no DAC) + Ipamorelin,10,MG
+CD2,CJC-1295 (with DAC),2,MG
+CD5,CJC-1295 (with DAC),5,MG
+COR20,Cortagen,20,MG
+CRY20,Crystagen,20,MG
+DR2,Dermorphin,2,MG
+DR10,Dermorphin,10,MG
+DS2,DSIP,2,MG
+DS5,DSIP,5,MG
+DS10,DSIP,10,MG
+ET10,Epithalon,10,MG
+ET50,Epithalon,50,MG
+E3K,EPO,3000,IU
+FD10,FOXO4-DRI,10,MG
+G610,G-610,10,MG
+CU50,GHK-Cu,50,MG
+CU100,GHK-Cu,100,MG
+G25,GHRP-2,5,MG
+G210,GHRP-2,10,MG
+G215,GHRP-2,15,MG
+G65,GHRP-6,5,MG
+BBG70,Glow,70,MG
+GT600,Glutathione,600,MG
+GT1500,Glutathione,1500,MG
+GND2,Gonadorelin,2,MG
+GND5,Gonadorelin,5,MG
+G1K,HCG,1000,IU
+G2K,HCG,2000,IU
+G5K,HCG,5000,IU
+G10K,HCG,10000,IU
+HEX5,Hexarelin,5,MG
+H10,HGH 191-AA (Somatropin),10,IU
+H12,HGH 191-AA (Somatropin),12,IU
+H15,HGH 191-AA (Somatropin),15,IU
+H24,HGH 191-AA (Somatropin),24,IU
+H36,HGH 191-AA (Somatropin),36,IU
+H40,HGH 191-AA (Somatropin),40,IU
+FR1,HGH Fragment 176-191,1,IU
+FR2,HGH Fragment 176-191,2,IU
+FR5,HGH Fragment 176-191,5,IU
+FR10,HGH Fragment 176-191,10,IU
+FR12,HGH Fragment 176-191,12,IU
+FR15,HGH Fragment 176-191,15,IU
+G75,HMG (Human Menopausal Gonadotropin),75,IU
+IG1,IGF-1 LR3,1,MG
+IG01,IGF-1 LR3,100,MCG
+IPA5,Ipamorelin,5,MG
+IPA10,Ipamorelin,10,MG
+KS5,Kisspeptin-10,5,MG
+KS10,Kisspeptin-10,10,MG
+KL80,Klow,80,MG
+KPV5,KPV,5,MG
+KPV10,KPV,10,MG
+LB10,Lemon Bottle,10,ML
+LC216,Lipo C,10,ML
+LC120,Lipo-C,120,MG
+LL5,Liraglutide,5,MG
+MDT10,Mazdutide,10,MG
+MTI10,Melanotan I,10,MG
+MTII10,Melanotan II,10,MG
+FM2,MGF,2,MG
+MOT10,MOTS-C,10,MG
+MOT40,MOTS-C,40,MG
+NAD100,NAD+,100,MG
+NAD500,NAD+,500,MG
+OXY2,Oxytocin Acetate,2,MG
+OXY5,Oxytocin Acetate,5,MG
+OXY10,Oxytocin Acetate,10,MG
+PE5,PE-22-28,5,MG
+PE10,PE-22-28,10,MG
+FMP2,PEG-MGF,2,MG
+PN5,Pinealon,5,MG
+RT5,Retatrutide,5,MG
+RT10,Retatrutide,10,MG
+RT15,Retatrutide,15,MG
+RT20,Retatrutide,20,MG
+RT30,Retatrutide,30,MG
+RT50,Retatrutide,50,MG
+RT60,Retatrutide,60,MG
+SLK5,Selank,5,MG
+SLK10,Selank,10,MG
+SM2,Semaglutide,2,MG
+SM5,Semaglutide,5,MG
+SM10,Semaglutide,10,MG
+SM15,Semaglutide,15,MG
+SM20,Semaglutide,20,MG
+SM30,Semaglutide,30,MG
+SM50,Semaglutide,50,MG
+SMX5,Semax,5,MG
+SMX10,Semax,10,MG
+SRM2,Sermorelin Acetate,2,MG
+SRM5,Sermorelin Acetate,5,MG
+SRM10,Sermorelin Acetate,10,MG
+SLU5,SLU-PP-332,5,MG
+SNP10,Snap-8,10,MG
+SNP100,Snap-8,100,MG
+SS5,SS-31,5,MG
+SS10,SS-31,10,MG
+SS50,SS-31,50,MG
+SUR10,Survodutide,10,MG
+TB2,TB-500,2,MG
+TB5,TB-500,5,MG
+TB10,TB-500,10,MG
+TESA2,Tesamorelin,2,MG
+TESA5,Tesamorelin,5,MG
+TESA10,Tesamorelin,10,MG
+TY10,Thymalin,10,MG
+TA5,Thymosin Alpha-1,5,MG
+TA10,Thymosin Alpha-1,10,MG
+TR2,Tirzepatide,2,MG
+TR5,Tirzepatide,5,MG
+TR10,Tirzepatide,10,MG
+TR15,Tirzepatide,15,MG
+TR20,Tirzepatide,20,MG
+TR30,Tirzepatide,30,MG
+TR40,Tirzepatide,40,MG
+TR50,Tirzepatide,50,MG
+TR60,Tirzepatide,60,MG
+TR80,Tirzepatide,80,MG
+TR100,Tirzepatide,100,MG
+VIP5,VIP,5,MG
+VIP10,VIP,10,MG
+AA5,Acetic Acid,5,ML
+AU50,AHK-CU,50,MG
+B1201,B12,1,MG
+B72,B7-33,2,MG
+B710,B7-33,10,MG
+BR20,Bronchogen,20,MG
+CA20,Cardiogen,20,MG
+LAX20,Cartalax,20,MG
+DR5,Dermorphin,5,MG
+DL5,Dulaglutide,5,MG
+DL10,Dulaglutide,10,MG
+F410,FOXO4,10,MG
+FD2,FOXO4-DRI,2,MG
+FRG10,Frag 17-23,10,MG
+FAP5,FTPP Adipotide,5,MG
+GDF1,GDF-8,1,MG
+CU2,GHK-Cu,2,MG
+HEX2,Hexarelin,2,MG
+H6,HGH 191-AA (Somatropin),6,IU
+H8,HGH 191-AA (Somatropin),8,IU
+HU10,Humanin,10,MG
+IPA2,Ipamorelin,2,MG
+LC600,L-Carnitine,600,MG
+LC1200,L-Carnitine,1200,MG
+LG5,Liraglutide,5,MG
+LG10,Liraglutide,10,MG
+LG30,Liraglutide,30,MG
+MA10,Matrixyl,10,MG
+NAD1000,NAD+,1000,MG
+PN10,Pinealon,10,MG
+PNC5,PNC-27,5,MG
+PT10,PT-141,10,MG
+TBF5,TB-500 Fragment,5,MG
+TBF10,TB-500 Fragment,10,MG
+TESA20,Tesamorelin,20,MG
+TRI2,Triptorelin Acetate,2,MG
+VE20,Vesugen,20,MG
+PRO20,Alprostadil,20,MCG
+B1210,B12,2,ML
+CND2,CJC-1295 (no DAC),2,MG
+ET5,Epithalon,5,MG
+FN1,Follistatin-344,1,MG
+BBG50,Glow,50,MG
+GP5,GLP-1,5,MG
+HA5,Hyaluronic Acid,5,MG
+IGFDES01,IGF-1 DES,100,MCG
+MTI5,Melanotan I,5,MG
+FMP10,PEG-MGF,10,MG
+PN20,Pinealon,20,MG
+PNC10,PNC-27,10,MG
+RT25,Retatrutide,25,MG
+RT35,Retatrutide,35,MG
+RT40,Retatrutide,40,MG
+TESA15,Tesamorelin,15,MG
+TA2,Thymosin Alpha-1,2,MG
+DS15,DSIP,15,MG
+GT1200,Glutathione,1200,MG
+IGFDES2,IGF-1 DES,2,MG
+RT24,Retatrutide,24,MG
+RT36,Retatrutide,36,MG
+TR45,Tirzepatide,45,MG
+AU100,AHK-CU,100,MG
+BC15,BPC-157,15,MG
+BC20,BPC-157,20,MG
+BC30,BPC-157,30,MG
+CD10,CJC-1295 (with DAC),10,MG
+MDT5,Mazdutide,5,MG
+TR120,Tirzepatide,120,MG
+HEX10,Hexarelin,10,MG
+ISU1,Insulin,1,ML
+MT10,Melatonin,10,MG
+MOT20,MOTS-C,20,MG
+MOT30,MOTS-C,30,MG
+SNP5,Snap-8,5,MG
+LC400,L-Carnitine,400,MG
+NET5,N-Acetyl Epitalon Amidate,5,MG
+P215,P21,5,MG
+RT45,Retatrutide,45,MG
+RC10,Retatrutide + Cagrilintide,10,MG
+TG20,Testagen,20,MG
+VI20,Vilon,20,MG
+IGFDES1,IGF-1 DES,1,MG
+F42,FOXO4,2,MG
+MOT15,MOTS-C,15,MG
+GT400,Glutathione,400,MG
+E5K,EPO,5000,IU
+BA5,BAC Water,5,ML
+BB04,BPC-157 + TB-500,4,MG
+CH20,Chonluten,20,MG
+DH10,Dihexa,10,MG
+MTII5,Melanotan II,5,MG
+OV20,Ovagen,20,MG
+P2110,P21,10,MG
+MAX20,Prostamax,20,MG
+TER10,Teriparatide,10,MG
+AR5,AICAR,5,MG
+LC500,L-Carnitine,500,MG
+LL10,Liraglutide,10,MG
+MDT20,Mazdutide,20,MG
+MOT5,MOTS-C,5,MG
+SS25,SS-31,25,MG
+SUR5,Survodutide,5,MG
+TY5,Thymalin,5,MG
+LI20,Livagen,20,MG
+PA20,Pancragen,20,MG
+CGL20,Cagrilintide,20,MG
+CP20,CJC-1295 (no DAC) + Ipamorelin,20,MG
+SLK30,Selank,30,MG
+SMX30,Semax,30,MG
+SRM15,Sermorelin Acetate,15,MG
+TB20,TB-500,20,MG
+ET40,Epithalon,40,MG
+SLU10,SLU-PP-332,10,MG
+DS12,DSIP,12,MG
+GT500,Glutathione,500,MG
+LC526,Lipo-C,526,MG
+LC425,Lipo-C FOCUS,425,MG
+RP226,Relaxation PM,226,MG
+SHB865,Super Human Blend,865,MG
+SS350,Super Shred,350,MG
+SUR2,Survodutide,2,MG
+TY20,Thymalin,20,MG
+TR70,Tirzepatide,70,MG
+TR90,Tirzepatide,90,MG
+AU20,AHK-CU,20,MG
+LAX10,Cartalax,10,MG
+F45,FOXO4,5,MG
+RT100,Retatrutide,100,MG
+TI10,Tesamorelin + Ipamorelin,10,MG
+BBG40,Glow,40,MG
+NSK30,NA Selank Amidate,30,MG
+NXA30,NA Semax Amidate,30,MG
+NAD750,NAD+,750,MG
+RC15,Retatrutide + Cagrilintide,15,MG
+SM3,Semaglutide,3,MG
+TI15,Tesamorelin + Ipamorelin,15,MG
+TR35,Tirzepatide,35,MG
+TR200,Tirzepatide,200,MG
+GH50,GHK Basic,50,MG
+NAD250,NAD+,250,MG
+PTD5,PTD-DBM,5,MG
+XS20,Semax + Selank,20,MG
+TI18,Tesamorelin + Ipamorelin,18,MG
+CBL30,CBL-514,30,MG
+HHB,Healthy Hair Skin Nails Blend,402,MG
+GAZ,Immunological Enhancement,402,MG
+LMX,Lipo Mino Mix,245,MG
+SHR,Shred,350,MG
+D320,Vitamin D3,20000,IU
+SM40,Semaglutide,40,MG
+LC300,Lipo-C,300,MG
+TR110,Tirzepatide,110,MG
+H50,HGH 191-AA (Somatropin),50,IU
+PL5,Pramlintide,5,MG
+PL10,Pramlintide,10,MG
+SZ352,SZ-352,352,MG
+RA16,ARA-290,16,MG
+ET20,Epithalon,20,MG
+SS20,SS-31,20,MG
+GND10,Gonadorelin,10,MG
+ISU3,Insulin,3,ML
+SM60,Semaglutide,60,MG
+LC2,L-Carnitine,2,MG
+TBF2,TB-500 Fragment,2,MG
+RA5,ARA-290,5,MG
+MIC10,MIC (Lipo C + B12),10,ML
+ACTH5,ACTH 1-39,5,MG
+AM5,Amylin,5,MG
+AG5,Angiotensin (1–7),5,MG
+BG5,Bimagrumab,5,MG
+CBL10,CBL-514,10,MG
+CBL20,CBL-514,20,MG
+CLK2,Cerlankin,2,MG
+CGRP1,CGRP (Calcitonin Gene-Related),1,MG
+CDI10,CJC-1295 (with DAC) + Ipamorelin,10,MG
+CT5,CT-1 Cardiotrophin-1,5,MG
+DH5,Dihexa,5,MG
+EBA5,Elabela Apelin,5,MG
+EFT90,Enfuvirtide,90,MG
+FGF10,FGF-21,10,MG
+GHL10,Ghrelin,10,MG
+GLU1,Glucagon,1,MG
+GS10,Goserelin,10,MG
+LPA10,Leuprolide acetate,10,MG
+LOX30,Lysyl Oxidase,30,MG
+NST5,Nesiritide,5,MG
+NPY10,Neuropeptide Y (NPY),10,MG
+OA10,Orexin A,10,MG
+OB5,Orexin B,5,MG
+OB10,Orexin B,10,MG
+PACAP5,PACAP,5,MG
+PTHF10,PTH fragments,10,MG
+RM5,Relamorelin,5,MG
+TG5,Teduglutide,5,MG
+TF1,Tesofensine,1,MG
+TPTN5,Treprostinil,5,MG
+PP10,P21 (With Adamantane),10,MG
+H20,HGH 191-AA (Somatropin),20,IU
+RT12,Retatrutide,12,MG
