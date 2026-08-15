@@ -1,0 +1,18 @@
+{
+  "module": "ansiedade-estresse",
+  "title": "Ansiedade / Estresse",
+  "status": "em-pesquisa",
+  "methodology": "Comparação por evidência, mecanismo, aplicabilidade translacional, limitações e redundância.",
+  "candidates": [
+    {"peptide":"Selank","priority":"A","role":"candidato prioritário","evidence":"estudos humanos específicos de ansiedade; literatura pré-clínica","notes":"Avaliar em dossiê aprofundado antes de qualquer conclusão."},
+    {"peptide":"Oxitocina","priority":"B","role":"candidato contextual","evidence":"ensaios humanos, especialmente contexto social","notes":"Efeitos inconsistentes; não tratar como ansiolítico geral."},
+    {"peptide":"DSIP","priority":"B/C","role":"sono-estresse","evidence":"literatura humana antiga e pré-clínica","notes":"Mais relevante como modulador de sono/estresse do que como ansiolítico direto."},
+    {"peptide":"Semax","priority":"B/C","role":"neuroativo complementar","evidence":"estudos humanos e pré-clínicos","notes":"Maior interesse para cognição/neuroproteção."},
+    {"peptide":"Neuropeptide Y (NPY)","priority":"B científico / C translacional","role":"alvo mecanístico","evidence":"forte literatura experimental","notes":"Mecanismo interessante, mas tradução terapêutica limitada."},
+    {"peptide":"Neuropeptide S (NPS)","priority":"C","role":"alvo mecanístico","evidence":"predominantemente experimental","notes":"Interessante para pesquisa, pouca evidência clínica."},
+    {"peptide":"Galanina","priority":"C","role":"alvo mecanístico","evidence":"predominantemente experimental","notes":"Sistema receptor-dependente e complexo."},
+    {"peptide":"Nesfatina-1","priority":"NR","role":"marcador/mecanismo de estresse","evidence":"experimental","notes":"Entra no mapa fisiológico, não como candidato ansiolítico."},
+    {"peptide":"CRH/CRF","priority":"NR","role":"sistema pró-estresse","evidence":"ampla literatura fisiológica","notes":"Usado como referência mecanística, não como candidato ansiolítico."
+    }
+  ]
+}
